@@ -1,8 +1,9 @@
 from state import *
 import json
+from hillclimbing import *
 
 
-path = "src/input.json" 
+path = "Tubes_AI_1\src\input.json" 
 
 
 with open(path, "r", encoding="utf-8") as file:
@@ -51,20 +52,37 @@ stateAwal.makeComplete(listMatkul)
 print("berhasil")
 
 for key in stateAwal.jadwal:
-    for list in stateAwal.jadwal[key]:
+    for x, list in enumerate(stateAwal.jadwal[key]):
+        if not list:
+            print("hari " + key + " jam "+ str(x+7))
+            continue
         for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(i+7) + " " + matkul.kode)
+            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 
 print("Nilai objective sekarang " + str(stateAwal.countObjective()))
 
-neighbours = stateAwal.swapMethod()
+# neighbours = stateAwal.swapMethod()
 print("berhasil 2")
 print()
 
 #coba salah 1 neighbor
-for key in neighbours[0].jadwal:
-    for list in neighbours[0].jadwal[key]:
+# for key in neighbours[0].jadwal:
+#     for list in neighbours[0].jadwal[key]:
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(i+7) + " " + matkul.kode)
+
+
+
+
+stochasticSolver = StochasticHC(stateAwal, 3)
+stateAkhir, objectiveFunc = stochasticSolver.solve()
+for key in stateAkhir.jadwal:
+    for x, list in enumerate(stateAkhir.jadwal[key]):
+        if not list:
+            print("hari " + key + " jam "+ str(x+7))
+            continue
         for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(i+7) + " " + matkul.kode)
+            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir " + str(objectiveFunc))
 
 #berhasil (keknya)

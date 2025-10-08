@@ -66,7 +66,6 @@ class State:
                     if(matkul.ruangan.kuota < matkul.jumlahMahasiswa):
                         total = abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
 
-
         return total
                     
 
@@ -79,17 +78,16 @@ class State:
             for idx1,matkul in enumerate(slots):
                 for j in range (i+1,len(jadwalFlat)):
                     for idx2,matkul2 in enumerate(jadwalFlat[j]):
-
                         if(jadwalFlat[i][idx1].kode != jadwalFlat[j][idx2].kode):
                             new_jadwal = copy.deepcopy(jadwalFlat)
-                            print(new_jadwal[i][idx1].kode +" "+ new_jadwal[j][idx2].kode)
+                            # print(new_jadwal[i][idx1].kode +" "+ new_jadwal[j][idx2].kode)
 
                             #tukar posisi matkul
                             temp = new_jadwal[i][idx1] 
                             new_jadwal[i][idx1] = new_jadwal[j][idx2]
                             new_jadwal[j][idx2] = temp
  
-                            print("SESUDAH SWAP:", new_jadwal[i][idx1].kode, "<->", new_jadwal[j][idx2].kode)
+                            # print("SESUDAH SWAP:", new_jadwal[j][idx2].kode)
 
                             new_state = State(self.listRuangan, new_jadwal)
 
@@ -98,7 +96,32 @@ class State:
 
         return neighbors
     
-    # def moveMethod(self):
+    def moveMethod(self):
+        neighbors = []
+        jadwalFlat = [slot for hari in self.jadwal.values() for slot in hari] 
+
+        for i in range(len(jadwalFlat)):
+            if (jadwalFlat[i] != []):
+                # print(f"i = {i}")
+                for j in range (len(jadwalFlat)):
+                    if (i == j) or (jadwalFlat[j] != []): # slot j sama atau tidak kosong skip
+                        continue
+                    for x,matkul in enumerate(jadwalFlat[i]):
+                        new_jadwal = copy.deepcopy(jadwalFlat)
+
+                        # pindahin matkul ke slot kosong, matkul di slot lama dihapus referensinya
+                        new_jadwal[j].append(new_jadwal[i][x])
+                        new_jadwal[i].pop(x)
+                        # print(f"j = {j} SESUDAH SWAP: {new_jadwal[j][0].kode}")
+
+                        new_state = State(self.listRuangan, new_jadwal)
+                
+                        neighbors.append(new_state)
+                          
+        # print("keluar")
+        return neighbors
+
+
 
 
 
