@@ -1,9 +1,9 @@
 from state import *
 import json
 from hillclimbing import *
+import os
 
-
-path = "Tubes_AI_1\src\input.json" 
+path = "input.json" 
 
 
 with open(path, "r", encoding="utf-8") as file:
@@ -74,7 +74,7 @@ print()
 
 
 
-stochasticSolver = StochasticHC(stateAwal, 3)
+stochasticSolver = StochasticHC(stateAwal, 200)
 stateAkhir, objectiveFunc = stochasticSolver.solve()
 for key in stateAkhir.jadwal:
     for x, list in enumerate(stateAkhir.jadwal[key]):
