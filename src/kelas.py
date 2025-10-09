@@ -26,3 +26,10 @@ class Matkul:
             total += int(key)*0.25*self.prioritas[key]
 
         return total
+    
+    # Method display yang penting muncul
+    def displayNgasal(self):
+        print(f"Kode: {self.kode}")
+        print(f"Jumlah Mhs: {self.jumlahMahasiswa}")
+        print(f"Ruangan: {self.ruangan.kode} | Kuota: {self.ruangan.kuota}")
+        print(f"Prioritas: {self.prioritas}")

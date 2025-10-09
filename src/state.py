@@ -121,10 +121,44 @@ class State:
         # print("keluar")
         return neighbors
 
+    # Method mengembalikan List of tuple {hari, slot, matkul}
+    # hari = "senin", "selasa", "rabu", "kamis", "jumat"
+    # slot = [0, 10] dimana 0 = jam 7, 10 jam 17
+    # matkul = Instansiasi dari Class Matkul
+    def serialize(self):
+        listTuple = []
+
+        for hari in self.jadwal:
+            for i, slot in enumerate(self.jadwal[hari]):
+                
+                # Tedapat matkul dalam slot
+                if slot:
+                    for matkul in slot:
+                        t = (hari, i, matkul)
+                        listTuple.append(t)
+
+        return listTuple
 
 
+    # Method mengisi atribut jadwal sesuai dengan listTuple
+    # listTuple adalah return dari method serialize()
+    def deserialize(self, listTuple):
+        # Clear all slots
+        for hari in self.jadwal:
+            for slot in self.jadwal[hari]:
+                slot.clear()
 
+        for t in listTuple:
+            self.jadwal[t[0]][t[1]].append(t[2])
 
-
-
-            
+    # Method display yang penting muncul
+    def displayNgasal(self):
+        for hari in self.jadwal:
+            print("=================================")
+            print(f"HARI {hari}")
+            for i, slot in enumerate(self.jadwal[hari]):
+                if slot:
+                    print(f"JAM {i + 7}:")
+                    for matkul in slot:
+                        print("++++++++")
+                        matkul.displayNgasal()
