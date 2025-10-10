@@ -140,8 +140,34 @@ class State:
 
         return neighbors
     
+      #Method menghasilkan semua successor random dari pemindahan satu pertemuan matkul ke slot yang kosong
+    def moveAllSuccessorMethod(self):
+        neighbors = []
+        jadwalFlat = [slot for hari in self.jadwal.values() for slot in hari] 
+
+        for i in range(len(jadwalFlat)):
+            if (jadwalFlat[i] != []):
+                # print(f"i = {i}")
+                for j in range (len(jadwalFlat)):
+                    if (i == j) or (jadwalFlat[j] != []): # slot j sama atau tidak kosong skip
+                        continue
+                    for x,matkul in enumerate(jadwalFlat[i]):
+                        new_jadwal = copy.deepcopy(jadwalFlat)
+
+                        # pindahin matkul ke slot kosong, matkul di slot lama dihapus referensinya
+                        new_jadwal[j].append(new_jadwal[i][x])
+                        new_jadwal[j][0].ruangan = random.choice(self.listRuangan)
+                        new_jadwal[i].pop(x)
+                        # print(f"j = {j} SESUDAH SWAP: {new_jadwal[j][0].kode}")
+
+                        new_state = State(self.listRuangan, new_jadwal)
+                
+                        neighbors.append(new_state)
+                          
+        return neighbors
+
     #Method menghasilkan satu successor random dari pemindahan satu pertemuan matkul ke slot yang kosong
-    def moveMethod(self):
+    def moveOneSuccessorMethod(self):
         jadwalFlat = [slot for hari in self.jadwal.values() for slot in hari] 
 
         # cek apakah masih ada slot kosong di jadwal
@@ -156,6 +182,7 @@ class State:
                     if (new_jadwalFlat[i] != [] and new_jadwalFlat[j] == []):
                         movedMatkulIdx = random.randint(0, len(new_jadwalFlat[i]) - 1)
                         new_jadwalFlat[j].append(new_jadwalFlat[i][movedMatkulIdx])
+                        new_jadwalFlat[j][0].ruangan = random.choice(self.listRuangan) # ruangan baru secara random
                         new_jadwalFlat[i].pop(movedMatkulIdx)
                         # print(f"i: {i}, j: {j}, matkul : {new_jadwalFlat[j][0].kode} ")
 
@@ -163,10 +190,6 @@ class State:
         # jika slot jadwal penuh
         return State(self.listRuangan, jadwalFlat)
 
-            
-
-
-   
 
     # Method mengembalikan List of tuple {hari, slot, matkul}
     # hari = "senin", "selasa", "rabu", "kamis", "jumat"
@@ -184,15 +207,11 @@ class State:
                         t = (hari, i, matkul)
                         listTuple.append(t)
 
-        # Sorted by kode matkul ascending
-        listTuple.sort(key=lambda x: x[2].kode)
-
         return listTuple
 
 
     # Method mengisi atribut jadwal sesuai dengan listTuple
     # listTuple adalah return dari method serialize()
-    # TODO: apakah lebih baik return deep copy state?
     def deserialize(self, listTuple):
         # Clear all slots
         for hari in self.jadwal:

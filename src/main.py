@@ -85,8 +85,36 @@ for key in stateAkhir.jadwal:
             continue
         for i,matkul in enumerate(list):
             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir " + str(objectiveFunc))
+print("Nilai objective akhir stochastic " + str(objectiveFunc))
+print()
+print()
 
+steepestAscentSolver = SteepestAscentHC(stateAwal)
+stateAkhir, objectiveFunc = steepestAscentSolver.solve()
+for key in stateAkhir.jadwal:
+    for x, list in enumerate(stateAkhir.jadwal[key]):
+        if not list:
+            print("hari " + key + " jam "+ str(x+7))
+            continue
+        for i,matkul in enumerate(list):
+            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir steepest ascent " + str(objectiveFunc))
+print()
+print()
+
+sidewaysMoveSolver = SidewaysMoveHC(stateAwal, 20)
+stateAkhir, objectiveFunc = sidewaysMoveSolver.solve()
+for key in stateAkhir.jadwal:
+    for x, list in enumerate(stateAkhir.jadwal[key]):
+        if not list:
+            print("hari " + key + " jam "+ str(x+7))
+            continue
+        for i,matkul in enumerate(list):
+            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir sideways move " + str(objectiveFunc))
+print()
+print()
+print()
 
 sa = SimulatedAnnealing(stateAwal, 200, 100)
 finalState, objFunc = sa.solve()
@@ -97,7 +125,9 @@ for key in finalState.jadwal:
             continue
         for i,matkul in enumerate(list):
             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir " + str(objFunc))
+print("Nilai objective akhir SA " + str(objFunc))
+print()
+print()
 
 # ====================== Contoh Pengggunaan GA ========================
 # Instansiasi object dari class genetic_algorithm

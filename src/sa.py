@@ -20,7 +20,7 @@ class SimulatedAnnealing:
                 listTuple = current.serialize()
                 neighbour = current.swapSatuMatkul(listTuple)
             else:
-                neighbour = current.moveMethod()
+                neighbour = current.moveOneSuccessorMethod()
 
             neighbourScore = neighbour.countObjective()
             deltaE = neighbourScore - currentScore
