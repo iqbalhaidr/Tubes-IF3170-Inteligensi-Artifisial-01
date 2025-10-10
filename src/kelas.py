@@ -33,3 +33,8 @@ class Matkul:
         print(f"Jumlah Mhs: {self.jumlahMahasiswa}")
         print(f"Ruangan: {self.ruangan.kode} | Kuota: {self.ruangan.kuota}")
         print(f"Prioritas: {self.prioritas}")
+    
+    # Method display yang penting muncul
+    def displayNgasal2(self):
+        str = f"{self.kode}, {self.ruangan.kode}"
+        return str

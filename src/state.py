@@ -137,11 +137,15 @@ class State:
                         t = (hari, i, matkul)
                         listTuple.append(t)
 
+        # Sorted by kode matkul ascending
+        listTuple.sort(key=lambda x: x[2].kode)
+
         return listTuple
 
 
     # Method mengisi atribut jadwal sesuai dengan listTuple
     # listTuple adalah return dari method serialize()
+    # TODO: apakah lebih baik return deep copy state?
     def deserialize(self, listTuple):
         # Clear all slots
         for hari in self.jadwal:
