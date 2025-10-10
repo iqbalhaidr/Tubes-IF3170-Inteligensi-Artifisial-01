@@ -1,9 +1,10 @@
 from state import *
 import json
 from hillclimbing import *
+from sa import *
 import os
 
-path = "input.json" 
+path = "src\input.json" 
 
 
 with open(path, "r", encoding="utf-8") as file:
@@ -84,5 +85,20 @@ for key in stateAkhir.jadwal:
         for i,matkul in enumerate(list):
             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir " + str(objectiveFunc))
+
+
+sa = SimulatedAnnealing(stateAwal, 200, 100)
+finalState, objFunc = sa.solve()
+for key in finalState.jadwal:
+    for x, list in enumerate(finalState.jadwal[key]):
+        if not list:
+            print("hari " + key + " jam "+ str(x+7))
+            continue
+        for i,matkul in enumerate(list):
+            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir " + str(objFunc))
+
+
+
 
 #berhasil (keknya)
