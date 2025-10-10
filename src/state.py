@@ -67,7 +67,37 @@ class State:
                         total = abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
 
         return total
-                    
+    
+    
+    #return state baru hasil swap
+    def swapSatuMatkul(self,  listTuple: list, indx1 : int = None, indx2 :int = None):
+
+        if(indx1 is None or indx2 is None):  #jika kosong
+
+            while True:
+                indx1, indx2 = random.sample(range(len(listTuple)), 2)
+                if listTuple[indx1][2].kode != listTuple[indx2][2].kode:
+                    break
+
+
+        hari1, jamMulai1, matkul1 = listTuple[indx1]
+        hari2, jamMulai2, matkul2 = listTuple[indx2]
+        
+        ruangan1 = matkul1.ruangan
+        ruangan2 = matkul2.ruangan
+
+        listTuple[indx1] = (hari2, jamMulai2, matkul2)
+        listTuple[indx2] = (hari1, jamMulai1, matkul1)
+        
+        matkul1.ruangan = ruangan2
+        matkul2.ruangan = ruangan1
+
+        newState = State(self.listRuangan)
+        newState.deserialize(listTuple)
+
+        return newState
+
+            
 
     def swapMethod(self) ->list:
         neighbors = []
@@ -82,10 +112,24 @@ class State:
                             new_jadwal = copy.deepcopy(jadwalFlat)
                             # print(new_jadwal[i][idx1].kode +" "+ new_jadwal[j][idx2].kode)
 
-                            #tukar posisi matkul
-                            temp = new_jadwal[i][idx1] 
-                            new_jadwal[i][idx1] = new_jadwal[j][idx2]
-                            new_jadwal[j][idx2] = temp
+                            matkul1 = new_jadwal[i][idx1]
+                            matkul2 = new_jadwal[j][idx2]
+
+                            ruangan_asal1 = matkul1.ruangan
+                            ruangan_asal2 = matkul2.ruangan
+
+                            #tukar matkul tapi ruangan tetap contoh dibawah ini
+                            #before 
+                            #slot [i][idx1]: A (Ruang X)
+                            #slot [j][idx2]: B (Ruang Y)
+
+                            #after Swap (tukar matkul, ruangan tetap di slot)
+                            #slot [i][idx1]: B (Ruang X)
+                            #slot [j][idx2]: A (Ruang Y)
+                            
+                            new_jadwal[i][idx1], new_jadwal[j][idx2] = matkul2, matkul1
+                            new_jadwal[i][idx1].ruangan = ruangan_asal2
+                            new_jadwal[j][idx2].ruangan = ruangan_asal1
  
                             # print("SESUDAH SWAP:", new_jadwal[j][idx2].kode)
 
@@ -96,30 +140,33 @@ class State:
 
         return neighbors
     
+    #Method menghasilkan satu successor random dari pemindahan satu pertemuan matkul ke slot yang kosong
     def moveMethod(self):
-        neighbors = []
         jadwalFlat = [slot for hari in self.jadwal.values() for slot in hari] 
 
-        for i in range(len(jadwalFlat)):
-            if (jadwalFlat[i] != []):
-                # print(f"i = {i}")
-                for j in range (len(jadwalFlat)):
-                    if (i == j) or (jadwalFlat[j] != []): # slot j sama atau tidak kosong skip
-                        continue
-                    for x,matkul in enumerate(jadwalFlat[i]):
-                        new_jadwal = copy.deepcopy(jadwalFlat)
+        # cek apakah masih ada slot kosong di jadwal
+        emptySlot = [idx for idx, slot in enumerate(jadwalFlat) if len(slot) == 0]
+        if (emptySlot):
+            new_jadwalFlat = copy.deepcopy(jadwalFlat)
+            i, j = 0, 0
+            while (True):
+                i, j = random.randint(0, len(new_jadwalFlat) - 1), random.randint(0, len(new_jadwalFlat) - 1)
+                if (i != j):
+                    # cek ada slot kosong tujuan di waktu yang berbeda dari slot awal yang terisi
+                    if (new_jadwalFlat[i] != [] and new_jadwalFlat[j] == []):
+                        movedMatkulIdx = random.randint(0, len(new_jadwalFlat[i]) - 1)
+                        new_jadwalFlat[j].append(new_jadwalFlat[i][movedMatkulIdx])
+                        new_jadwalFlat[i].pop(movedMatkulIdx)
+                        # print(f"i: {i}, j: {j}, matkul : {new_jadwalFlat[j][0].kode} ")
 
-                        # pindahin matkul ke slot kosong, matkul di slot lama dihapus referensinya
-                        new_jadwal[j].append(new_jadwal[i][x])
-                        new_jadwal[i].pop(x)
-                        # print(f"j = {j} SESUDAH SWAP: {new_jadwal[j][0].kode}")
+                        return State(self.listRuangan, new_jadwalFlat)
+        # jika slot jadwal penuh
+        return State(self.listRuangan, jadwalFlat)
 
-                        new_state = State(self.listRuangan, new_jadwal)
-                
-                        neighbors.append(new_state)
-                          
-        # print("keluar")
-        return neighbors
+            
+
+
+   
 
     # Method mengembalikan List of tuple {hari, slot, matkul}
     # hari = "senin", "selasa", "rabu", "kamis", "jumat"
