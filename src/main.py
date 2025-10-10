@@ -2,6 +2,7 @@ from state import *
 import json
 from hillclimbing import *
 from sa import *
+from genetic_algorithm import *
 import os
 
 path = "src\input.json" 
@@ -98,7 +99,15 @@ for key in finalState.jadwal:
             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir " + str(objFunc))
 
+# ====================== Contoh Pengggunaan GA ========================
+# Instansiasi object dari class genetic_algorithm
+obj_GA = genetic_algorithm(listRuangan, listMatkul)
 
+# Menjalankan genetic algorithm, GA(k, n)
+data_GA = obj_GA.GA(40, 1000)
 
+# Membuat chart plotting
+genetic_algorithm.make_chart(data_GA, "./plot.png")
+# ====================== Contoh Pengggunaan GA ========================
 
 #berhasil (keknya)
