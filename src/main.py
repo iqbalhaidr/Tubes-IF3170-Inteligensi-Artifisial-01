@@ -74,49 +74,113 @@ print()
 #             print("hari " + key + " jam "+ str(i+7) + " " + matkul.kode)
 
 
-
-
+print()
+print()
+# ====================== Contoh Pengggunaan Stochastic ========================
+print("====================== Contoh Pengggunaan Stochastic ========================")
 stochasticSolver = StochasticHC(stateAwal, 200)
-stateAkhir, objectiveFunc = stochasticSolver.solve()
-for key in stateAkhir.jadwal:
-    for x, list in enumerate(stateAkhir.jadwal[key]):
-        if not list:
-            print("hari " + key + " jam "+ str(x+7))
-            continue
-        for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir stochastic " + str(objectiveFunc))
+data_StochasticHC = stochasticSolver.solve()
+stateAwal_StochasticHC = stochasticSolver.stateAwal
+stateAkhir_StochasticHC = data_StochasticHC[0]
+objFunc_StochasticHC = data_StochasticHC[1]
+
+stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
+# for key in stateAkhir.jadwal:
+#     for x, list in enumerate(stateAkhir.jadwal[key]):
+#         if not list:
+#             print("hari " + key + " jam "+ str(x+7))
+#             continue
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir stochastic " + str(objFunc_StochasticHC))
+stateAkhir_StochasticHC.display()
 print()
 print()
 
+# ====================== Contoh Pengggunaan Steepest Ascent ========================
+print("====================== Contoh Pengggunaan Steepest Ascent ========================")
 steepestAscentSolver = SteepestAscentHC(stateAwal)
-stateAkhir, objectiveFunc = steepestAscentSolver.solve()
-for key in stateAkhir.jadwal:
-    for x, list in enumerate(stateAkhir.jadwal[key]):
-        if not list:
-            print("hari " + key + " jam "+ str(x+7))
-            continue
-        for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir steepest ascent " + str(objectiveFunc))
+data_SteepestAscentHC = steepestAscentSolver.solve()
+stateAwal_SteepestAscentHC = steepestAscentSolver.stateAwal
+stateAkhir_SteepestAscentHC = data_SteepestAscentHC[0]
+objFunc_SteepestAscentHC = data_SteepestAscentHC[1]
+iterationCount_SteepestAscentHC = data_SteepestAscentHC[3]
+
+steepestAscentSolver.make_chart(data_SteepestAscentHC,"./plot1.png")
+
+# stateAkhir, objectiveFunc = steepestAscentSolver.solve()
+# for key in stateAkhir.jadwal:
+#     for x, list in enumerate(stateAkhir.jadwal[key]):
+#         if not list:
+#             print("hari " + key + " jam "+ str(x+7))
+#             continue
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir steepest ascent " + str(objFunc_SteepestAscentHC))
+print(f"Iteration count = {iterationCount_SteepestAscentHC}")
+stateAkhir_SteepestAscentHC.display()
 print()
 print()
 
+# ====================== Contoh Pengggunaan Sideways Move ========================
+print("====================== Contoh Pengggunaan Sideways Move ========================")
 sidewaysMoveSolver = SidewaysMoveHC(stateAwal, 20)
-stateAkhir, objectiveFunc = sidewaysMoveSolver.solve()
-for key in stateAkhir.jadwal:
-    for x, list in enumerate(stateAkhir.jadwal[key]):
-        if not list:
-            print("hari " + key + " jam "+ str(x+7))
-            continue
-        for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir sideways move " + str(objectiveFunc))
+data_SidewaysMoveHC = sidewaysMoveSolver.solve()
+stateAwal_SidewaysMoveHC = sidewaysMoveSolver.stateAwal
+stateAkhir_SidewaysMoveHC = data_SidewaysMoveHC[0]
+objFunc_SidewaysMoveHC = data_SidewaysMoveHC[1]
+iterationCount_SidewaysMoveHC = data_SidewaysMoveHC[3]
+
+sidewaysMoveSolver.make_chart(data_SidewaysMoveHC,"./plot2.png")
+
+
+# for key in stateAkhir.jadwal:
+#     for x, list in enumerate(stateAkhir.jadwal[key]):
+#         if not list:
+#             print("hari " + key + " jam "+ str(x+7))
+#             continue
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir sideways move " + str(objFunc_SidewaysMoveHC))
+print(f"Iteration count = {iterationCount_SidewaysMoveHC}")
+stateAkhir_SidewaysMoveHC.display()
 print()
+print()
+
+# ====================== Contoh Pengggunaan Random Restart ========================
+print("====================== Contoh Pengggunaan Random Restart ========================")
+randomRestartSolver = RandomRestarttHC(listRuangan, listMatkul, 5)
+data_RandomRestartHC = randomRestartSolver.solve()
+# Kumpulan initial states
+statesAwal_RandomRestartHC = data_RandomRestartHC[0] 
+
+stateAkhir_RandomRestartHC = data_RandomRestartHC[1]
+objFunc_RandomRestartHC = data_RandomRestartHC[2]
+iterationCount_RandomRestartHC = data_RandomRestartHC[4]
+restartCount_RandomRestartHC = data_RandomRestartHC[5]
+
+randomRestartSolver.make_chart(data_RandomRestartHC,"./plot3.png")
+
+
+# for key in stateAkhir.jadwal:
+#     for x, list in enumerate(stateAkhir.jadwal[key]):
+#         if not list:
+#             print("hari " + key + " jam "+ str(x+7))
+#             continue
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+print("Nilai objective akhir Random Restart " + str(objFunc_RandomRestartHC))
+# Iteration count per restart
+print(f"Banyak restart = {restartCount_RandomRestartHC}")
+for i, iterCount in enumerate(iterationCount_RandomRestartHC):
+    print(f"Restart {i} - Iteration count = {iterCount}")
+print()
+stateAkhir_RandomRestartHC.display()
 print()
 print()
 
 # ====================== Contoh Pengggunaan SA ========================
+print("====================== Contoh Pengggunaan SA ========================")
 sa = SimulatedAnnealing(stateAwal, 200, 100)
 data = sa.solve()
 stateAwalSA = sa.stateAwal
@@ -134,7 +198,7 @@ if data[5]:
 #         for i,matkul in enumerate(list):
 #             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 
-sa.make_chart(data,"./plot.png")
+sa.make_chart(data,"./plot4.png")
 
 print("Nilai objective akhir SA " + str(objFunc))
 finalState.display()
@@ -142,6 +206,7 @@ print()
 print()
 
 # ====================== Contoh Pengggunaan GA ========================
+print("====================== Contoh Pengggunaan GA ========================")
 # Instansiasi object dari class genetic_algorithm
 obj_GA = genetic_algorithm(listRuangan, listMatkul)
 
@@ -149,7 +214,7 @@ obj_GA = genetic_algorithm(listRuangan, listMatkul)
 data_GA = obj_GA.GA(40, 1000)
 
 # Membuat chart plotting
-genetic_algorithm.make_chart(data_GA, "./plot.png")
+genetic_algorithm.make_chart(data_GA, "./plot5.png")
 # ====================== Contoh Pengggunaan GA ========================
 
 #berhasil (keknya)
