@@ -120,14 +120,17 @@ class State:
                 for j in range (i+1,len(jadwalFlat)):
                     for idx2,matkul2 in enumerate(jadwalFlat[j]):
                         if(jadwalFlat[i][idx1].kode != jadwalFlat[j][idx2].kode):
-                            new_jadwal = copy.deepcopy(jadwalFlat)
-                            # print(new_jadwal[i][idx1].kode +" "+ new_jadwal[j][idx2].kode)
+                            # shallow copy jadwal baru dan slot-slot untuk index i dan j
+                            new_jadwal = jadwalFlat[:]
+                            new_jadwal[i] = jadwalFlat[i][:]
+                            new_jadwal[j] = jadwalFlat[j][:]
 
-                            matkul1 = new_jadwal[i][idx1]
-                            matkul2 = new_jadwal[j][idx2]
+                            # copy matkul yang mau diswap
+                            copyMatkul_i = copy.copy(jadwalFlat[i][idx1])
+                            copyMatkul_j = copy.copy(jadwalFlat[j][idx2])
 
-                            ruangan_asal1 = matkul1.ruangan
-                            ruangan_asal2 = matkul2.ruangan
+                            ruangan_asal1 = copyMatkul_i.ruangan
+                            ruangan_asal2 = copyMatkul_j.ruangan
 
                             #tukar matkul tapi ruangan tetap contoh dibawah ini
                             #before 
@@ -138,7 +141,7 @@ class State:
                             #slot [i][idx1]: B (Ruang X)
                             #slot [j][idx2]: A (Ruang Y)
                             
-                            new_jadwal[i][idx1], new_jadwal[j][idx2] = matkul2, matkul1
+                            new_jadwal[i][idx1], new_jadwal[j][idx2] = copyMatkul_j, copyMatkul_i
                             new_jadwal[i][idx1].ruangan = ruangan_asal2
                             new_jadwal[j][idx2].ruangan = ruangan_asal1
  
@@ -151,7 +154,7 @@ class State:
 
         return neighbors
     
-      #Method menghasilkan semua successor random dari pemindahan satu pertemuan matkul ke slot yang kosong
+    #Method menghasilkan semua successor random dari pemindahan satu pertemuan matkul ke slot yang kosong
     def moveAllSuccessorMethod(self):
         neighbors = []
         jadwalFlat = [slot for hari in self.jadwal.values() for slot in hari] 
@@ -163,12 +166,17 @@ class State:
                     if (i == j) or (jadwalFlat[j] != []): # slot j sama atau tidak kosong skip
                         continue
                     for x,matkul in enumerate(jadwalFlat[i]):
-                        new_jadwal = copy.deepcopy(jadwalFlat)
+                        # buat shallow copy jadwal baru, dan shallow copy slot untuk indeks i dan j saja
+                        new_jadwal = jadwalFlat[:]
+                        new_jadwal[i] = jadwalFlat[i][:]
+                        new_jadwal[j] = jadwalFlat[j][:] 
 
-                        # pindahin matkul ke slot kosong, matkul di slot lama dihapus referensinya
-                        new_jadwal[j].append(new_jadwal[i][x])
-                        new_jadwal[j][0].ruangan = random.choice(self.listRuangan)
+                        # buat copy-an matkul yang dipindah dan isi ruangan random
+                        matkulCopy = copy.copy(new_jadwal[i][x])
+                        matkulCopy.ruangan = random.choice(self.listRuangan)
+                        new_jadwal[j].append(matkulCopy)
                         new_jadwal[i].pop(x)
+
                         # print(f"j = {j} SESUDAH SWAP: {new_jadwal[j][0].kode}")
 
                         new_state = State(self.listRuangan, self.listMahasiswa, new_jadwal)
