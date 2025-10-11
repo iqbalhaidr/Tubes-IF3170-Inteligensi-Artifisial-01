@@ -52,10 +52,17 @@ class SimulatedAnnealing:
             plotObjFunc.append(currentScore)
 
         end_time = time.perf_counter()
-
         elapsed_time = end_time - start_time
 
-        return copy.deepcopy(current), currentScore, plotObjFunc, plotExp, elapsed_time
+        localOptimum = False
+        N = min(10, len(plotObjFunc)) 
+
+        if currentScore != 0:
+            #kalau 10 trakhir atau n buah obj terakhir nilainya sama local optimum
+            if len(set(plotObjFunc[-N:])) == 1:
+                localOptimum = True
+
+        return copy.deepcopy(current), currentScore, plotObjFunc, plotExp, elapsed_time, localOptimum
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
@@ -78,6 +85,8 @@ class SimulatedAnnealing:
         plt.tight_layout()
         plt.savefig(f"{file_path}_exp_prob.png", dpi=300, bbox_inches="tight")
         plt.close()
+
+
 
 
 

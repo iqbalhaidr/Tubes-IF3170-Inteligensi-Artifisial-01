@@ -123,6 +123,9 @@ stateAwalSA = sa.stateAwal
 finalState = data[0]
 objFunc = data[1]
 
+if data[5]: 
+    print("SA terjebak di local optimum")
+    
 # for key in finalState.jadwal:
 #     for x, list in enumerate(finalState.jadwal[key]):
 #         if not list:
