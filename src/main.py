@@ -84,11 +84,12 @@ print()
 print()
 # ====================== Contoh Pengggunaan Stochastic ========================
 print("====================== Contoh Pengggunaan Stochastic ========================")
-stochasticSolver = StochasticHC(stateAwal, 200)
+stochasticSolver = StochasticHC(stateAwal, 20*len(listMatkul))
 data_StochasticHC = stochasticSolver.solve()
 stateAwal_StochasticHC = stochasticSolver.stateAwal
 stateAkhir_StochasticHC = data_StochasticHC[0]
 objFunc_StochasticHC = data_StochasticHC[1]
+elapsedTime_StochasticHC = data_StochasticHC[3]
 
 stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
 # for key in stateAkhir.jadwal:
@@ -99,6 +100,7 @@ stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
 #         for i,matkul in enumerate(list):
 #             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir stochastic " + str(objFunc_StochasticHC))
+print(f"Total waktu : {elapsedTime_StochasticHC} s")
 stateAkhir_StochasticHC.display()
 print()
 print()
@@ -111,6 +113,7 @@ stateAwal_SteepestAscentHC = steepestAscentSolver.stateAwal
 stateAkhir_SteepestAscentHC = data_SteepestAscentHC[0]
 objFunc_SteepestAscentHC = data_SteepestAscentHC[1]
 iterationCount_SteepestAscentHC = data_SteepestAscentHC[3]
+elapsedTime_SteepestAscentHC = data_SteepestAscentHC[4]
 
 steepestAscentSolver.make_chart(data_SteepestAscentHC,"./plot1.png")
 
@@ -124,6 +127,7 @@ steepestAscentSolver.make_chart(data_SteepestAscentHC,"./plot1.png")
 #             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir steepest ascent " + str(objFunc_SteepestAscentHC))
 print(f"Iteration count = {iterationCount_SteepestAscentHC}")
+print(f"Total waktu = {elapsedTime_SteepestAscentHC} s")
 stateAkhir_SteepestAscentHC.display()
 print()
 print()
@@ -136,6 +140,7 @@ stateAwal_SidewaysMoveHC = sidewaysMoveSolver.stateAwal
 stateAkhir_SidewaysMoveHC = data_SidewaysMoveHC[0]
 objFunc_SidewaysMoveHC = data_SidewaysMoveHC[1]
 iterationCount_SidewaysMoveHC = data_SidewaysMoveHC[3]
+elapsedTime_SidewaysMoveHC = data_SidewaysMoveHC[4]
 
 sidewaysMoveSolver.make_chart(data_SidewaysMoveHC,"./plot2.png")
 
@@ -149,13 +154,14 @@ sidewaysMoveSolver.make_chart(data_SidewaysMoveHC,"./plot2.png")
 #             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir sideways move " + str(objFunc_SidewaysMoveHC))
 print(f"Iteration count = {iterationCount_SidewaysMoveHC}")
+print(f"Total waktu = {elapsedTime_SidewaysMoveHC} s")
 stateAkhir_SidewaysMoveHC.display()
 print()
 print()
 
 # ====================== Contoh Pengggunaan Random Restart ========================
 print("====================== Contoh Pengggunaan Random Restart ========================")
-randomRestartSolver = RandomRestarttHC(listRuangan, listMatkul, listMahasiswa, 5)
+randomRestartSolver = RandomRestartHC(listRuangan, listMatkul, listMahasiswa, 5)
 data_RandomRestartHC = randomRestartSolver.solve()
 # Kumpulan initial states
 statesAwal_RandomRestartHC = data_RandomRestartHC[0] 
@@ -164,6 +170,7 @@ stateAkhir_RandomRestartHC = data_RandomRestartHC[1]
 objFunc_RandomRestartHC = data_RandomRestartHC[2]
 iterationCount_RandomRestartHC = data_RandomRestartHC[4]
 restartCount_RandomRestartHC = data_RandomRestartHC[5]
+elapsedTime_RandomRestartHC = data_RandomRestartHC[6]
 
 randomRestartSolver.make_chart(data_RandomRestartHC,"./plot3.png")
 
@@ -180,6 +187,7 @@ print("Nilai objective akhir Random Restart " + str(objFunc_RandomRestartHC))
 print(f"Banyak restart = {restartCount_RandomRestartHC}")
 for i, iterCount in enumerate(iterationCount_RandomRestartHC):
     print(f"Restart {i} - Iteration count = {iterCount}")
+print(f"Total waktu = {elapsedTime_RandomRestartHC} s")
 print()
 stateAkhir_RandomRestartHC.display()
 print()

@@ -1,6 +1,7 @@
 from state import State
 import random
 import copy
+import time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -12,7 +13,11 @@ class StochasticHC:
     
     def solve(self):
         current = self.stateAwal
+        currentScore = self.stateAwal.countObjective()
         plotObjFunc = []
+
+        start_time = time.perf_counter()
+        
         for i in range(self.jumlahIterasi):
             listTuple = current.serialize()
             neighbor1 = current.swapSatuMatkul(listTuple)
@@ -24,15 +29,21 @@ class StochasticHC:
             else:
                 neighbour = neighbor2
 
+            neighbourScore = neighbour.countObjective()
+
             # Pindah ke neighbour jika nilai obj func nya lebih rendah
-            if neighbour.countObjective() < current.countObjective():
+            if neighbourScore < currentScore:
                 current = neighbour
-                plotObjFunc.append(current.countObjective())
+                currentScore = neighbourScore
+                plotObjFunc.append(currentScore)
             else:
-                plotObjFunc.append(current.countObjective())
+                plotObjFunc.append(currentScore)
         # for i in range(len(plotObjFunc)):
         #     print(f"value{i}= {plotObjFunc[i]}")
-        return copy.deepcopy(current), current.countObjective(), plotObjFunc
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+
+        return copy.deepcopy(current), currentScore, plotObjFunc, elapsed_time
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
@@ -48,42 +59,55 @@ class StochasticHC:
 class SteepestAscentHC:
     def __init__(self, stateAwal : State):
         self.stateAwal = stateAwal 
-    
-    def solve(self):
-        current = self.stateAwal
-        plotObjFunc = []
-        iterationCount = 0
-        while (True):
-            iterationCount += 1
 
-            #Pilih aksi swap atau move secara random, ambil semua successor
-            selectedSuccessor = None
-            minSuccessorObjFunction = 99999999
-
-            if (random.choice([True, False])):
-                successors = current.swapMethod()
-            else:
-                successors = current.moveAllSuccessorMethod()
-
-            # Cari successor dengan nilai obj function terendah
-            for successor in successors:
+    def findBestSuccessor(self, successors : list):
+        minSuccessorObjFunction = 99999999
+        selectedSuccessor = None
+        for successor in successors:
                     if successor.countObjective() < minSuccessorObjFunction:
                         selectedSuccessor = successor
                         minSuccessorObjFunction = successor.countObjective()
+        return selectedSuccessor
+    
+    def solve(self):
+        current = self.stateAwal
+        currentScore = self.stateAwal.countObjective()
+        plotObjFunc = []
+        iterationCount = 0
 
-            neighbour = copy.deepcopy(selectedSuccessor)
+        start_time = time.perf_counter()
+        while (True):
+            iterationCount += 1
+
+            successors1 = current.swapMethod()
+            successors2 = current.moveAllSuccessorMethod()
+
+            neighbor1 = self.findBestSuccessor(successors1)
+            neighbor2 = self.findBestSuccessor(successors2)
+
+            # Bandingkan nilai cost / objective
+            if neighbor1.countObjective() < neighbor2.countObjective():
+                neighbour = neighbor1
+            else:
+                neighbour = neighbor2
+            
+            neighbourScore = neighbour.countObjective()
+           
 
             # keluarkan hasil ketika tidak ada neighbour yang lebih rendah dengan nilai obj func
-            if (neighbour.countObjective() >= current.countObjective()):
-                plotObjFunc.append(current.countObjective())
+            if (neighbourScore >= currentScore):
+                plotObjFunc.append(currentScore)
                 break
             else:
                 current = neighbour
-                plotObjFunc.append(current.countObjective())
+                currentScore = neighbourScore
+                plotObjFunc.append(currentScore)
         # for i in range(len(plotObjFunc)):
         #     print(f"value{i} = {plotObjFunc[i]}")
         # print(f"iter count = {iterationCount}")
-        return copy.deepcopy(current), current.countObjective(), plotObjFunc, iterationCount
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        return copy.deepcopy(current), currentScore, plotObjFunc, iterationCount, elapsed_time
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
@@ -100,50 +124,64 @@ class SidewaysMoveHC:
     def __init__(self, stateAwal : State, maxSidewaysMove : int):
         self.stateAwal = stateAwal 
         self.maxSidewaysMove = maxSidewaysMove
-    
-    def solve(self):
-        current = self.stateAwal
-        iterationCount = 0
-        sidewaysMove = 0
-        plotObjFunc = []
-        while (True):
-            iterationCount += 1
 
-            #Pilih aksi swap atau move secara random, ambil semua successor
-            selectedSuccessor = None
-            minSuccessorObjFunction = 99999999
-
-            if (random.choice([True, False])):
-                successors = current.swapMethod()
-            else:
-                successors = current.moveAllSuccessorMethod()
-
-            # Cari successor dengan nilai obj function terendah
-            for successor in successors:
+    def findBestSuccessor(self, successors : list):
+        minSuccessorObjFunction = 99999999
+        selectedSuccessor = None
+        for successor in successors:
                     if successor.countObjective() < minSuccessorObjFunction:
                         selectedSuccessor = successor
                         minSuccessorObjFunction = successor.countObjective()
+        return selectedSuccessor
+    
+    def solve(self):
+        current = self.stateAwal
+        currentScore = self.stateAwal.countObjective()
+        iterationCount = 0
+        sidewaysMove = 0
+        plotObjFunc = []
 
-            neighbour = copy.deepcopy(selectedSuccessor) 
+        start_time = time.perf_counter()
+        while (True):
+            iterationCount += 1
+
+            successors1 = current.swapMethod()
+            successors2 = current.moveAllSuccessorMethod()
+
+            neighbor1 = self.findBestSuccessor(successors1)
+            neighbor2 = self.findBestSuccessor(successors2)
+
+            # Bandingkan nilai cost / objective
+            if neighbor1.countObjective() < neighbor2.countObjective():
+                neighbour = neighbor1
+            else:
+                neighbour = neighbor2
+            
+            neighbourScore = neighbour.countObjective()
+
 
             # keluarkan hasil ketika tidak ada neighbour yang lebih rendah sama dengan nilai obj func
-            if (neighbour.countObjective() > current.countObjective()):
-                plotObjFunc.append(current.countObjective())
+            if (neighbourScore > currentScore):
+                plotObjFunc.append(currentScore)
                 break
             else:
                 # jumlah sideways move bertambah jika nilai obj func sama
-                if (neighbour.countObjective() == current.countObjective()):
+                if (neighbourScore == currentScore):
                     sidewaysMove += 1
                 # print(f"iter count {iterationCount} sideaysmove {sidewaysMove}")
                 current = neighbour
-                plotObjFunc.append(current.countObjective())
+                currentScore = neighbourScore
+                plotObjFunc.append(currentScore)
                 if (sidewaysMove == self.maxSidewaysMove):
                     # print(f"iter count {iterationCount} break")
                     break
         # for i in range(len(plotObjFunc)):
         #     print(f"value{i} = {plotObjFunc[i]}")
         # print(f"iter count = {iterationCount}")
-        return copy.deepcopy(current), current.countObjective(), plotObjFunc, iterationCount
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+
+        return copy.deepcopy(current), currentScore, plotObjFunc, iterationCount, elapsed_time
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
@@ -156,24 +194,36 @@ class SidewaysMoveHC:
         plt.savefig(f"{file_path}_objective.png", dpi=300, bbox_inches="tight")
         plt.close()
 
-class RandomRestarttHC:
+class RandomRestartHC:
     def __init__(self, listRuangan : list, listMatkul : list, listMahasiswa : list, maxRestart: int):
         self.listRuangan = listRuangan
         self.listMatkul = listMatkul
         self.listMahasiswa = listMahasiswa
         self.maxRestart = maxRestart
+
+    def findBestSuccessor(self, successors : list):
+        minSuccessorObjFunction = 99999999
+        selectedSuccessor = None
+        for successor in successors:
+                    if successor.countObjective() < minSuccessorObjFunction:
+                        selectedSuccessor = successor
+                        minSuccessorObjFunction = successor.countObjective()
+        return selectedSuccessor
     
     def solve(self):
         restartCount = 0
-        minObjFunctionIteration = 999999
         initialStates = []
         plotObjFunc, iterationCountList = [], [] # Obj func keseluruhan tiap restart
 
+        start_time = time.perf_counter()
+
         bestState = None
-        while (restartCount < self.maxRestart and minObjFunctionIteration > 0):
+        bestScore = 9999999
+        while (restartCount < self.maxRestart and bestScore > 0):
             # initial random state
             current = State(self.listRuangan, self.listMahasiswa)
             current.makeComplete(self.listMatkul)
+            currentScore = current.countObjective()
             initialStates.append(current)
 
             if (restartCount == 0):
@@ -185,36 +235,34 @@ class RandomRestarttHC:
             while (True):
                 iterationCount += 1
 
-                #Pilih aksi swap atau move secara random, ambil semua successor
-                selectedSuccessor = None
-                minSuccessorObjFunction = 99999999
+                successors1 = current.swapMethod()
+                successors2 = current.moveAllSuccessorMethod()
 
-                if (random.choice([True, False])):
-                    successors = current.swapMethod()
+                neighbor1 = self.findBestSuccessor(successors1)
+                neighbor2 = self.findBestSuccessor(successors2)
+
+                # Bandingkan nilai cost / objective
+                if neighbor1.countObjective() < neighbor2.countObjective():
+                    neighbour = neighbor1
                 else:
-                    successors = current.moveAllSuccessorMethod()
-
-                # Cari successor dengan nilai obj function terendah
-                for successor in successors:
-                        if successor.countObjective() < minSuccessorObjFunction:
-                            selectedSuccessor = successor
-                            minSuccessorObjFunction = successor.countObjective()
-
-                neighbour = copy.deepcopy(selectedSuccessor)
+                    neighbour = neighbor2
+                
+                neighbourScore = neighbour.countObjective()
                 
                 # Buat hasil ketika tidak ada neighbour yang lebih rendah nilai obj func
-                if (neighbour.countObjective() >= current.countObjective()):
-                    minObjFunctionIteration = current.countObjective()
-                    subPlotObjFunc.append(current.countObjective())
+                if (neighbourScore >= currentScore):
+                    bestScore = currentScore
+                    subPlotObjFunc.append(currentScore)
                     break
                 else:
                     current = neighbour
-                    subPlotObjFunc.append(current.countObjective())
+                    currentScore = neighbourScore
+                    subPlotObjFunc.append(currentScore)
 
             # print(f"obj func restart ke {restartCount} : {current.countObjective()}")
             # Mengambil state terbaik saat ini dengan membandingkan nilai
             # obj func dari hasil state restart
-            if (bestState.countObjective() > current.countObjective()):
+            if (bestScore > currentScore):
                 bestState = current
 
             # Masukkan obj func per iterasi dalam satu restart ke plot obj
@@ -222,8 +270,10 @@ class RandomRestarttHC:
             plotObjFunc.append(subPlotObjFunc)
             restartCount += 1
         
-            
-        return initialStates, copy.deepcopy(bestState), bestState.countObjective(), plotObjFunc, iterationCountList, restartCount
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        
+        return initialStates, copy.deepcopy(bestState), bestScore, plotObjFunc, iterationCountList, restartCount, elapsed_time
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
