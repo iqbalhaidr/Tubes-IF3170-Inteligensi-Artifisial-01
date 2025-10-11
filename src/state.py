@@ -4,8 +4,9 @@ import copy
 from tabulate import tabulate
 
 class State:
-    def __init__(self, listRuangan :list, jadwalFlatten = None):
+    def __init__(self, listRuangan :list, listMahasiswa :list ,jadwalFlatten = None):
         self.listRuangan = listRuangan
+        self.listMahasiswa = listMahasiswa
         if(jadwalFlatten != None):
             self.jadwal = self._from_flat(jadwalFlatten)
         else:
@@ -54,7 +55,11 @@ class State:
 
                 #func objective 1 di spek
                 if(banyakMatkulNabrak > 1):
-                    total+= banyakMatkulNabrak
+                    for mhs, dfMk in self.listMahasiswa:
+                        same = len(set(dfMk) & set(slots))
+                        if same > 1:
+                            total += same
+
 
                     #func objective 2 di spek
                     for i in range(banyakMatkulNabrak):
@@ -93,7 +98,7 @@ class State:
         matkul1.ruangan = ruangan2
         matkul2.ruangan = ruangan1
 
-        newState = State(self.listRuangan)
+        newState = State(self.listRuangan, self.listMahasiswa)
         newState.deserialize(listTuple)
 
         return newState
@@ -134,7 +139,7 @@ class State:
  
                             # print("SESUDAH SWAP:", new_jadwal[j][idx2].kode)
 
-                            new_state = State(self.listRuangan, new_jadwal)
+                            new_state = State(self.listRuangan, self.listMahasiswa, new_jadwal)
 
                             neighbors.append(new_state)
 
@@ -161,7 +166,7 @@ class State:
                         new_jadwal[i].pop(x)
                         # print(f"j = {j} SESUDAH SWAP: {new_jadwal[j][0].kode}")
 
-                        new_state = State(self.listRuangan, new_jadwal)
+                        new_state = State(self.listRuangan, self.listMahasiswa, new_jadwal)
                 
                         neighbors.append(new_state)
                           
@@ -187,9 +192,9 @@ class State:
                         new_jadwalFlat[i].pop(movedMatkulIdx)
                         # print(f"i: {i}, j: {j}, matkul : {new_jadwalFlat[j][0].kode} ")
 
-                        return State(self.listRuangan, new_jadwalFlat)
+                        return State(self.listRuangan, self.listMahasiswa, new_jadwalFlat)
         # jika slot jadwal penuh
-        return State(self.listRuangan, jadwalFlat)
+        return State(self.listRuangan, self.listMahasiswa, jadwalFlat)
 
 
     # Method mengembalikan List of tuple {hari, slot, matkul}

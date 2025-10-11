@@ -14,12 +14,15 @@ class StochasticHC:
         current = self.stateAwal
         plotObjFunc = []
         for i in range(self.jumlahIterasi):
-            # pilihan aksi swap atau move secara random, satu successor
-            if (random.choice([True, False])):
-                listTuple = current.serialize()
-                neighbour = copy.deepcopy(current.swapSatuMatkul(listTuple))
+            listTuple = current.serialize()
+            neighbor1 = current.swapSatuMatkul(listTuple)
+            neighbor2 = current.moveOneSuccessorMethod()
+
+            # Bandingkan nilai cost / objective
+            if neighbor1.countObjective() < neighbor2.countObjective():
+                neighbour = neighbor1
             else:
-                neighbour = copy.deepcopy(current.moveOneSuccessorMethod()) 
+                neighbour = neighbor2
 
             # Pindah ke neighbour jika nilai obj func nya lebih rendah
             if neighbour.countObjective() < current.countObjective():
@@ -154,9 +157,10 @@ class SidewaysMoveHC:
         plt.close()
 
 class RandomRestarttHC:
-    def __init__(self, listRuangan : list, listMatkul : list, maxRestart: int):
+    def __init__(self, listRuangan : list, listMatkul : list, listMahasiswa : list, maxRestart: int):
         self.listRuangan = listRuangan
         self.listMatkul = listMatkul
+        self.listMahasiswa = listMahasiswa
         self.maxRestart = maxRestart
     
     def solve(self):
@@ -168,7 +172,7 @@ class RandomRestarttHC:
         bestState = None
         while (restartCount < self.maxRestart and minObjFunctionIteration > 0):
             # initial random state
-            current = State(self.listRuangan)
+            current = State(self.listRuangan, self.listMahasiswa)
             current.makeComplete(self.listMatkul)
             initialStates.append(current)
 

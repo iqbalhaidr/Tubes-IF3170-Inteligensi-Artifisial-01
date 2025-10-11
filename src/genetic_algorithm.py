@@ -8,9 +8,10 @@ import numpy as np
 class genetic_algorithm:
     # listRuangan dan listMatkul diperlukan hanya untuk membuat sebuah object State pada fungsi GA
     # supaya parameter GA hanya k, n (ga listRuangan, listMatkul)
-    def __init__(self, listRuangan, listMatkul):
+    def __init__(self, listRuangan, listMatkul, listMahasiswa):
         self.listRuangan = listRuangan
         self.listMatkul = listMatkul
+        self.listMahasiswa = listMahasiswa
 
     # static function mengembalikan sebuah individual (objek State) secara random dari populasi
     # population: List of State
@@ -235,7 +236,7 @@ class genetic_algorithm:
 
         for i in range(k):
             # Membuat k individual secara random
-            individual = State(self.listRuangan)
+            individual = State(self.listRuangan, self.listMahasiswa)
             individual.makeComplete(self.listMatkul)
             start_population.append(individual)
 

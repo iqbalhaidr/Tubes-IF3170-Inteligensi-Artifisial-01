@@ -11,7 +11,7 @@ class SimulatedAnnealing:
         self.stateAwal = stateAwal
         self.jumlahIterasi = jumlahIterasi  
         self.temperature = temperature
-        self.coolingRate = 0.95
+        self.coolingRate = 0.985
     
     def solve(self):
         plotObjFunc = []
@@ -27,11 +27,16 @@ class SimulatedAnnealing:
             if currentScore == 0:
                 break
 
-            if (random.choice([True, False])):
-                listTuple = current.serialize()
-                neighbour = current.swapSatuMatkul(listTuple)
+            listTuple = current.serialize()
+            neighbor1 = current.swapSatuMatkul(listTuple)
+            neighbor2 = current.moveOneSuccessorMethod()
+
+            # Bandingkan nilai cost / objective
+            if neighbor1.countObjective() < neighbor2.countObjective():
+                neighbour = neighbor1
             else:
-                neighbour = current.moveOneSuccessorMethod()
+                neighbour = neighbor2
+
 
             neighbourScore = neighbour.countObjective()
             deltaE = neighbourScore - currentScore

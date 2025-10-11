@@ -13,6 +13,12 @@ with open(path, "r", encoding="utf-8") as file:
 
 listRuangan =[]
 listMatkul = []
+listMahasiswa = [] #isinya seperti ini (NIM, dftar mk)
+
+for value in data['mahasiswa']:
+    NIM = value['nim']
+    daftar_mk = value['daftar_mk']
+    listMahasiswa.append((NIM,daftar_mk))
 
 for value in data['ruangan']:
     kode = value['kode']
@@ -48,7 +54,7 @@ print()
 for elem in listMatkul:
     print(elem.kode)
 
-stateAwal = State(listRuangan)
+stateAwal = State(listRuangan, listMahasiswa)
 stateAwal.makeComplete(listMatkul)
 
 print("berhasil")
@@ -149,7 +155,7 @@ print()
 
 # ====================== Contoh Pengggunaan Random Restart ========================
 print("====================== Contoh Pengggunaan Random Restart ========================")
-randomRestartSolver = RandomRestarttHC(listRuangan, listMatkul, 5)
+randomRestartSolver = RandomRestarttHC(listRuangan, listMatkul, listMahasiswa, 5)
 data_RandomRestartHC = randomRestartSolver.solve()
 # Kumpulan initial states
 statesAwal_RandomRestartHC = data_RandomRestartHC[0] 
@@ -181,7 +187,7 @@ print()
 
 # ====================== Contoh Pengggunaan SA ========================
 print("====================== Contoh Pengggunaan SA ========================")
-sa = SimulatedAnnealing(stateAwal, 200, 100)
+sa = SimulatedAnnealing(stateAwal, 20*len(listMatkul), 100)
 data = sa.solve()
 stateAwalSA = sa.stateAwal
 finalState = data[0]
@@ -208,7 +214,7 @@ print()
 # ====================== Contoh Pengggunaan GA ========================
 print("====================== Contoh Pengggunaan GA ========================")
 # Instansiasi object dari class genetic_algorithm
-obj_GA = genetic_algorithm(listRuangan, listMatkul)
+obj_GA = genetic_algorithm(listRuangan, listMatkul, listMahasiswa)
 
 # Menjalankan genetic algorithm, GA(k, n)
 data_GA = obj_GA.GA(40, 1000)
