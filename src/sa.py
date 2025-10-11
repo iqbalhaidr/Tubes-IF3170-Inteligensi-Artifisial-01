@@ -2,6 +2,8 @@ from state import State
 import random
 import copy
 import math
+import time
+import matplotlib.pyplot as plt
 
 
 class SimulatedAnnealing:
@@ -12,10 +14,19 @@ class SimulatedAnnealing:
         self.coolingRate = 0.95
     
     def solve(self):
+        plotObjFunc = []
+        plotExp = []
+        
         current = self.stateAwal
         currentScore = self.stateAwal.countObjective()
+        plotObjFunc.append(currentScore)
         
+        start_time = time.perf_counter()
+
         for i in range(self.jumlahIterasi):
+            if currentScore == 0:
+                break
+
             if (random.choice([True, False])):
                 listTuple = current.serialize()
                 neighbour = current.swapSatuMatkul(listTuple)
@@ -28,14 +39,47 @@ class SimulatedAnnealing:
             #better
             if  deltaE < 0:
                 current = neighbour
-                currentScore = neighbourScore              
+                currentScore = neighbourScore             
+                prob = 1.0 
             else:
-                if (self.temperature != 0 and random.random() < math.exp(-deltaE / self.temperature)) :
+                prob = math.exp(-deltaE / max(self.temperature, 1e-8))
+                if random.random() < prob:
                     current = neighbour
-                    currentScore = neighbourScore  
-
+                    currentScore = neighbourScore
+                   
+            plotExp.append((i,prob))
             self.temperature = self.temperature * self.coolingRate
+            plotObjFunc.append(currentScore)
 
-        return copy.deepcopy(current), currentScore
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+
+        return copy.deepcopy(current), currentScore, plotObjFunc, plotExp, elapsed_time
+    
+    def make_chart(self, data_output, file_path):
+        plt.figure(figsize=(8, 5))
+        plt.plot(range(len(data_output[2])), data_output[2], color='blue')
+        plt.xlabel("Iterasi")
+        plt.ylabel("Objective Function")
+        plt.title("Perubahan Nilai Objective Function terhadap Iterasi")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(f"{file_path}_objective.png", dpi=300, bbox_inches="tight")
+        plt.close()
+
+        iters, probs = zip(*data_output[3])
+        plt.figure(figsize=(8, 5))
+        plt.plot(iters, probs, color='purple')
+        plt.xlabel("Iterasi")
+        plt.ylabel("Probabilitas e^(-ΔE/T)")
+        plt.title("Perubahan Probabilitas Penerimaan Solusi Buruk terhadap Iterasi")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(f"{file_path}_exp_prob.png", dpi=300, bbox_inches="tight")
+        plt.close()
+
+
+
     
 

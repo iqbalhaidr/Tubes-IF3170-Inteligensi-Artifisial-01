@@ -116,15 +116,23 @@ print()
 print()
 print()
 
+# ====================== Contoh Pengggunaan SA ========================
 sa = SimulatedAnnealing(stateAwal, 200, 100)
-finalState, objFunc = sa.solve()
-for key in finalState.jadwal:
-    for x, list in enumerate(finalState.jadwal[key]):
-        if not list:
-            print("hari " + key + " jam "+ str(x+7))
-            continue
-        for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+data = sa.solve()
+stateAwalSA = sa.stateAwal
+finalState = data[0]
+objFunc = data[1]
+
+# for key in finalState.jadwal:
+#     for x, list in enumerate(finalState.jadwal[key]):
+#         if not list:
+#             print("hari " + key + " jam "+ str(x+7))
+#             continue
+#         for i,matkul in enumerate(list):
+#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+
+sa.make_chart(data,"./plot.png")
+
 print("Nilai objective akhir SA " + str(objFunc))
 print()
 print()
