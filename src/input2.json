@@ -1,0 +1,87 @@
+{
+  "kelas_mata_kuliah": [
+    {
+      "kode": "IF3110",
+      "jumlah_mahasiswa": 65,
+      "sks": 3
+    },
+    {
+      "kode": "IF3170",
+      "jumlah_mahasiswa": 70,
+      "sks": 4
+    },
+    {
+      "kode": "KU5004",
+      "jumlah_mahasiswa": 90,
+      "sks": 2
+    },
+    {
+      "kode": "IF3130",
+      "jumlah_mahasiswa": 60,
+      "sks": 3
+    },
+        {
+      "kode": "IF2224",
+      "jumlah_mahasiswa": 60,
+      "sks": 4
+    },
+    {
+      "kode": "IF3140",
+      "jumlah_mahasiswa": 60,
+      "sks": 3
+    },
+        {
+      "kode": "WI2022",
+      "jumlah_mahasiswa": 55,
+      "sks": 2
+    },
+    {
+      "kode": "KU3001",
+      "jumlah_mahasiswa": 80,
+      "sks": 2
+    },
+    {
+      "kode": "KU3002",
+      "jumlah_mahasiswa": 85,
+      "sks": 2
+    }
+  ],
+
+  "ruangan": [
+    {
+      "kode": "7602",
+      "kuota": 65
+    },
+    {
+      "kode": "7609",
+      "kuota": 70
+    },
+    {
+      "kode": "9018",
+      "kuota": 95
+    }
+  ],
+
+  "mahasiswa": [
+    {
+      "nim": "13523601",
+      "daftar_mk": ["IF3170", "IF3110", "KU5004", "WI2022", "KU3001", "IF3140"],
+      "prioritas": [1, 2, 3, 4, 5, 6]
+    },
+    {
+      "nim": "135236641",
+      "daftar_mk": ["IF2224", "WI2022", "KU3002", "IF3140", "IF3110"],
+      "prioritas": [1, 2, 3, 4, 5]
+    },
+    {
+      "nim": "13523669",
+      "daftar_mk": ["IF3130", "IF3140", "WI2022"],
+      "prioritas": [1, 2, 3]
+    },
+    {
+      "nim": "13523600",
+      "daftar_mk": ["IF3170", "IF2224", "IF3110", "KU3001", "KU3002", "IF3130", "WI2022"],
+      "prioritas": [1, 2, 3, 4, 5, 6, 7]
+    }
+  ]
+}

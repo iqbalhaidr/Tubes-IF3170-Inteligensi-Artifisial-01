@@ -5,7 +5,7 @@ from sa import *
 from genetic_algorithm import *
 import os
 
-path = "src\input.json" 
+path = "src\input2.json" 
 
 
 with open(path, "r", encoding="utf-8") as file:
@@ -125,7 +125,7 @@ objFunc = data[1]
 
 if data[5]: 
     print("SA terjebak di local optimum")
-    
+
 # for key in finalState.jadwal:
 #     for x, list in enumerate(finalState.jadwal[key]):
 #         if not list:
