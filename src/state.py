@@ -65,7 +65,7 @@ class State:
                 #func objective 3 di spek
                 for matkul in slots:
                     if(matkul.ruangan.kuota < matkul.jumlahMahasiswa):
-                        total = abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
+                        total += abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
 
         return total
     
@@ -205,7 +205,7 @@ class State:
                 # Tedapat matkul dalam slot
                 if slot:
                     for matkul in slot:
-                        t = (hari, i, matkul)
+                        t = (hari, i, copy.deepcopy(matkul))
                         listTuple.append(t)
 
         # Sorted by kode matkul ascending
