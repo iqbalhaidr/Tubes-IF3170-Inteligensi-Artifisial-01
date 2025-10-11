@@ -208,6 +208,9 @@ class State:
                         t = (hari, i, matkul)
                         listTuple.append(t)
 
+        # Sorted by kode matkul ascending
+        listTuple.sort(key=lambda x: x[2].kode)
+
         return listTuple
 
 
