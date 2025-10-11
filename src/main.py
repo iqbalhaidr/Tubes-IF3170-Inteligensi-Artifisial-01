@@ -137,6 +137,7 @@ if data[5]:
 sa.make_chart(data,"./plot.png")
 
 print("Nilai objective akhir SA " + str(objFunc))
+finalState.display()
 print()
 print()
 
