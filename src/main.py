@@ -124,7 +124,7 @@ print()
 print()
 
 # ====================== Contoh Pengggunaan SA ========================
-sa = SimulatedAnnealing(stateAwal, 400, 100)
+sa = SimulatedAnnealing(stateAwal, 20*len(listMatkul), 100)
 data = sa.solve()
 stateAwalSA = sa.stateAwal
 finalState = data[0]
