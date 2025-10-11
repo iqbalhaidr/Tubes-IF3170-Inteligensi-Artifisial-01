@@ -76,7 +76,7 @@ class genetic_algorithm:
     
     # static function mengembalikan State (1 child) hasil crossover yang memiliki nilai fitness terbaik
     # parent_1, parent_2: State
-    # TODO: diasumsikan menggunakan GA modern (child hanya 1, diambil yang memiliki fitness function terbaik)
+    # TODO: [DONE] diasumsikan menggunakan GA modern (child hanya 1, diambil yang memiliki fitness function terbaik)
     @staticmethod
     def reproduce(parent_1, parent_2):
         # Serialisasi state menjadi List of tuple {hari, slot, Matkul}
@@ -223,9 +223,9 @@ class genetic_algorithm:
     # k = banyaknya individu dalam populasi (HARUS GENAP, GANJIL BLM SUPPORT)
     # n = banyaknya iterasi maksimal yang dapat dilakukan
     # Catatan: referensi algoritma dari PPT IF3170 Intelegensi Buatan Beyond Classical Search
-    # TODO: support individu ganjil. Ans: setiap crossover hanya memilih 1 child dengan nilai fitness terbaik
-    # TODO: support prevent parent adalah individual yang sama
-    # TODO: setiap child hasil crossover pasti di mutate
+    # TODO: [DONE] support individu ganjil. Ans: setiap crossover hanya memilih 1 child dengan nilai fitness terbaik
+    # TODO: [DONE] support prevent parent adalah individual yang sama. Ans: ga perlu lah, di PPT juga gaada begituan
+    # TODO: [DONE] setiap child hasil crossover pasti di mutate
     def GA(self, k, n):
         # Variable menghitung waktu dimulai
         start_time = time.perf_counter()
@@ -263,7 +263,7 @@ class genetic_algorithm:
             
             sum = sum + fitness_value
 
-        avg = sum / n
+        avg = sum / k
 
         data = [max, avg]
         plot.append(data)
@@ -303,7 +303,7 @@ class genetic_algorithm:
                 
                 sum = sum + fitness_value
 
-            avg = sum / n
+            avg = sum / k
 
             data = [max, avg]
             plot.append(data)
@@ -314,6 +314,19 @@ class genetic_algorithm:
 
 
             itr = itr + 1
+
+        # Cari individual paling fit
+        max = -1
+        fittest_individual = population[0]
+
+        for individual in population:
+            # Kalkulasi nilai fitness function setiap individu (populasi)
+		    # Rumus: fitness = 1 / (obj + 1) -> Nilai fitness function = [0, 1], 1 terbaik
+            objective_value = individual.countObjective()
+            fitness_value = 1 / (objective_value + 1)
+
+            if (fitness_value > max):
+                fittest_individual = individual
         
         # Variable menghitung waktu selesai
         end_time = time.perf_counter()
@@ -321,7 +334,7 @@ class genetic_algorithm:
         elapsed_time = end_time - start_time
         
         # Return berupa tuple (start_population, end_population, plot, k, n, durasi)
-        data = (start_population, population, plot, k, n, elapsed_time)
+        data = (start_population, population, plot, k, n, elapsed_time, fittest_individual)
 
         return data
 
@@ -341,11 +354,11 @@ class genetic_algorithm:
             avg.append(iteration[1])
 
 
-        title = f"Genetic Algorithm (k={k}, n={n}, t={elapsed_time} ms)"
+        title = f"Genetic Algorithm (k={k}, n={n}, iteration={len(plot)}, t={elapsed_time} s)"
 
         plt.figure(figsize=(6.4, 4.8), layout='constrained')
         plt.title(title)
-        plt.xlabel('Iterasi')
+        plt.xlabel('Iteration')
         plt.ylabel('Fitness Function')
         plt.ylim(0, 1)
 
@@ -365,4 +378,5 @@ class genetic_algorithm:
                         xycoords=('axes fraction', 'data'), textcoords='offset points')
 
         plt.legend()
+        plt.grid(True)
         plt.savefig(file_path)
