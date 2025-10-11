@@ -65,7 +65,7 @@ class State:
                 #func objective 3 di spek
                 for matkul in slots:
                     if(matkul.ruangan.kuota < matkul.jumlahMahasiswa):
-                        total = abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
+                        total += abs(matkul.ruangan.kuota - matkul.jumlahMahasiswa)
 
         return total
     
