@@ -327,7 +327,7 @@ class genetic_algorithm:
             fitness_value = 1 / (objective_value + 1)
 
             if (fitness_value > max):
-				max = fitness_value
+                max = fitness_value
                 fittest_individual = individual
         
         # Variable menghitung waktu selesai
@@ -382,4 +382,4 @@ class genetic_algorithm:
         plt.legend()
         plt.grid(True)
         plt.savefig(file_path)
-		plt.close()
+        plt.close()
