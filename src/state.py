@@ -53,10 +53,15 @@ class State:
             for slots in self.jadwal[key]:
                 banyakMatkulNabrak = len(slots)
 
+                #deteksi duplikasi untuk 2 matkul yang kodenya sama dalam 1 slot
+                listKodeMk = [mk.kode for mk in slots]
+                if len(listKodeMk) != len(set(listKodeMk)):
+                    total += 10
+
                 #func objective 1 di spek
                 if(banyakMatkulNabrak > 1):
                     for mhs, dfMk in self.listMahasiswa:
-                        same = len(set(dfMk) & set(slots))
+                        same = len(set(dfMk) & set(listKodeMk))
                         if same > 1:
                             total += same
 
