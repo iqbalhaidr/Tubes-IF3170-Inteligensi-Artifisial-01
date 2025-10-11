@@ -1,6 +1,7 @@
 from kelas import *
 import random
 import copy
+from tabulate import tabulate
 
 class State:
     def __init__(self, listRuangan :list, jadwalFlatten = None):
@@ -212,6 +213,7 @@ class State:
 
     # Method mengisi atribut jadwal sesuai dengan listTuple
     # listTuple adalah return dari method serialize()
+    # TODO: [DONE] apakah lebih baik return deep copy state? gausahlah, gini udah jalan
     def deserialize(self, listTuple):
         # Clear all slots
         for hari in self.jadwal:
@@ -220,6 +222,22 @@ class State:
 
         for t in listTuple:
             self.jadwal[t[0]][t[1]].append(t[2])
+
+    # Fungsi display State dalam bentuk tabel seperti di spek
+    def display(self):
+        data = []
+        for i in range(11):
+            row = [(i + 7)]
+            for hari in ["senin", "selasa", "rabu", "kamis", "jumat"]:
+                pertemuan_joined = ""
+                for matkul in self.jadwal[hari][i]:
+                    pertemuan = f"{matkul.kode} @ {matkul.ruangan.kode}"
+                    pertemuan_joined += pertemuan + "\n"
+                row.append(pertemuan_joined)
+            data.append(row)
+        
+        headers = ["Jam", "Senin", "Selasa", "Rabu", "Kamis", "Jumat"]
+        print(tabulate(data, headers=headers, tablefmt="grid"))
 
     # Method display yang penting muncul
     def displayNgasal(self):
