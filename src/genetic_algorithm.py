@@ -356,7 +356,7 @@ class genetic_algorithm:
             avg.append(iteration[1])
 
 
-        title = f"Genetic Algorithm (k={k}, n={n}, iteration={len(plot)}, t={elapsed_time} s)"
+        title = f"Genetic Algorithm (k={k}, n={n}, iteration={len(plot) - 1}, t={elapsed_time} s)"
 
         plt.figure(figsize=(6.4, 4.8), layout='constrained')
         plt.title(title)
