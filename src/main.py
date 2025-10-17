@@ -54,6 +54,8 @@ print()
 for elem in listMatkul:
     print(elem.kode)
 
+
+
 stateAwal = State(listRuangan, listMahasiswa)
 stateAwal.makeComplete(listMatkul)
 
@@ -87,9 +89,11 @@ print("====================== Contoh Pengggunaan Stochastic ====================
 stochasticSolver = StochasticHC(stateAwal, 20*len(listMatkul))
 data_StochasticHC = stochasticSolver.solve()
 stateAwal_StochasticHC = stochasticSolver.stateAwal
+stateAwal_StochasticHC.display()
 stateAkhir_StochasticHC = data_StochasticHC[0]
 objFunc_StochasticHC = data_StochasticHC[1]
-elapsedTime_StochasticHC = data_StochasticHC[3]
+iterationCount_StochasticHC = data_StochasticHC[3]
+elapsedTime_StochasticHC = data_StochasticHC[4]
 
 stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
 # for key in stateAkhir.jadwal:
@@ -100,6 +104,7 @@ stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
 #         for i,matkul in enumerate(list):
 #             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
 print("Nilai objective akhir stochastic " + str(objFunc_StochasticHC))
+print(f"Iteration count = {iterationCount_StochasticHC}")
 print(f"Total waktu : {elapsedTime_StochasticHC} s")
 stateAkhir_StochasticHC.display()
 print()
@@ -110,6 +115,7 @@ print("====================== Contoh Pengggunaan Steepest Ascent ===============
 steepestAscentSolver = SteepestAscentHC(stateAwal)
 data_SteepestAscentHC = steepestAscentSolver.solve()
 stateAwal_SteepestAscentHC = steepestAscentSolver.stateAwal
+stateAwal_SteepestAscentHC.display()
 stateAkhir_SteepestAscentHC = data_SteepestAscentHC[0]
 objFunc_SteepestAscentHC = data_SteepestAscentHC[1]
 iterationCount_SteepestAscentHC = data_SteepestAscentHC[3]
@@ -134,9 +140,10 @@ print()
 
 # ====================== Contoh Pengggunaan Sideways Move ========================
 print("====================== Contoh Pengggunaan Sideways Move ========================")
-sidewaysMoveSolver = SidewaysMoveHC(stateAwal, 20)
+sidewaysMoveSolver = SidewaysMoveHC(stateAwal, 6)
 data_SidewaysMoveHC = sidewaysMoveSolver.solve()
 stateAwal_SidewaysMoveHC = sidewaysMoveSolver.stateAwal
+stateAwal_SidewaysMoveHC.display()
 stateAkhir_SidewaysMoveHC = data_SidewaysMoveHC[0]
 objFunc_SidewaysMoveHC = data_SidewaysMoveHC[1]
 iterationCount_SidewaysMoveHC = data_SidewaysMoveHC[3]
@@ -161,10 +168,11 @@ print()
 
 # ====================== Contoh Pengggunaan Random Restart ========================
 print("====================== Contoh Pengggunaan Random Restart ========================")
-randomRestartSolver = RandomRestartHC(listRuangan, listMatkul, listMahasiswa, 5)
+randomRestartSolver = RandomRestartHC(listRuangan, listMatkul, listMahasiswa, 4)
 data_RandomRestartHC = randomRestartSolver.solve()
 # Kumpulan initial states
 statesAwal_RandomRestartHC = data_RandomRestartHC[0] 
+statesAwal_RandomRestartHC[0].display()
 
 stateAkhir_RandomRestartHC = data_RandomRestartHC[1]
 objFunc_RandomRestartHC = data_RandomRestartHC[2]
@@ -215,6 +223,7 @@ if data[5]:
 sa.make_chart(data,"./plot4.png")
 
 print("Nilai objective akhir SA " + str(objFunc))
+print(f"Total waktu = {data[4]} s")
 finalState.display()
 print()
 print()

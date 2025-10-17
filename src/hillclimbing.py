@@ -38,12 +38,11 @@ class StochasticHC:
                 plotObjFunc.append(currentScore)
             else:
                 plotObjFunc.append(currentScore)
-        # for i in range(len(plotObjFunc)):
-        #     print(f"value{i}= {plotObjFunc[i]}")
+
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
 
-        return copy.deepcopy(current), currentScore, plotObjFunc, elapsed_time
+        return copy.deepcopy(current), currentScore, plotObjFunc, self.jumlahIterasi, elapsed_time
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
@@ -102,9 +101,7 @@ class SteepestAscentHC:
                 current = neighbour
                 currentScore = neighbourScore
                 plotObjFunc.append(currentScore)
-        # for i in range(len(plotObjFunc)):
-        #     print(f"value{i} = {plotObjFunc[i]}")
-        # print(f"iter count = {iterationCount}")
+   
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
         return copy.deepcopy(current), currentScore, plotObjFunc, iterationCount, elapsed_time
@@ -159,7 +156,6 @@ class SidewaysMoveHC:
             
             neighbourScore = neighbour.countObjective()
 
-
             # keluarkan hasil ketika tidak ada neighbour yang lebih rendah sama dengan nilai obj func
             if (neighbourScore > currentScore):
                 plotObjFunc.append(currentScore)
@@ -168,16 +164,13 @@ class SidewaysMoveHC:
                 # jumlah sideways move bertambah jika nilai obj func sama
                 if (neighbourScore == currentScore):
                     sidewaysMove += 1
-                # print(f"iter count {iterationCount} sideaysmove {sidewaysMove}")
+
                 current = neighbour
                 currentScore = neighbourScore
                 plotObjFunc.append(currentScore)
                 if (sidewaysMove == self.maxSidewaysMove):
-                    # print(f"iter count {iterationCount} break")
                     break
-        # for i in range(len(plotObjFunc)):
-        #     print(f"value{i} = {plotObjFunc[i]}")
-        # print(f"iter count = {iterationCount}")
+       
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
 
@@ -259,7 +252,6 @@ class RandomRestartHC:
                     currentScore = neighbourScore
                     subPlotObjFunc.append(currentScore)
 
-            # print(f"obj func restart ke {restartCount} : {current.countObjective()}")
             # Mengambil state terbaik saat ini dengan membandingkan nilai
             # obj func dari hasil state restart
             if (bestScore > currentScore):
