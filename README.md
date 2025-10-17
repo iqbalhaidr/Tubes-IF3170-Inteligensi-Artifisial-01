@@ -1,4 +1,4 @@
-# Tugas Besar 1 IF2211 Strategi Algoritma 2024/2025
+# Tugas Besar 1 IF3170 Intelegensi Artifisial 2025/2026
 Tugas ini mengeksplorasi implementasi dari beberapa algoritma local search untuk menyelesaikan masalah penjadwalan kelas mingguan yang kompleks. Tujuan utamanya adalah untuk menemukan jadwal yang optimal dengan meminimalkan konflik berdasarkan serangkaian batasan yang didefinisikan dalam fungsi objektif. Algoritma yang diimplementasikan antara lain adalah **Hill-Climbing Steepest Ascent, Hill-Climbing with Sideways Move, Random Restart Hill-Climbing, Stochastic Hill-Climbing, Simulated Annealing, dan Genetic Algorithm**.
 
 
