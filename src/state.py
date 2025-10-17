@@ -234,7 +234,6 @@ class State:
 
     # Method mengisi atribut jadwal sesuai dengan listTuple
     # listTuple adalah return dari method serialize()
-    # TODO: [DONE] apakah lebih baik return deep copy state? gausahlah, gini udah jalan
     def deserialize(self, listTuple):
         # Clear all slots
         for hari in self.jadwal:
@@ -245,7 +244,7 @@ class State:
             self.jadwal[t[0]][t[1]].append(t[2])
 
     # Fungsi display State dalam bentuk tabel seperti di spek
-    def display(self):
+    def display(self, f=None):
         data = []
         for i in range(11):
             row = [(i + 7)]
@@ -258,16 +257,8 @@ class State:
             data.append(row)
         
         headers = ["Jam", "Senin", "Selasa", "Rabu", "Kamis", "Jumat"]
-        print(tabulate(data, headers=headers, tablefmt="grid"))
 
-    # Method display yang penting muncul
-    def displayNgasal(self):
-        for hari in self.jadwal:
-            print("=================================")
-            print(f"HARI {hari}")
-            for i, slot in enumerate(self.jadwal[hari]):
-                if slot:
-                    print(f"JAM {i + 7}:")
-                    for matkul in slot:
-                        print("++++++++")
-                        matkul.displayNgasal()
+        if not f:
+            print(tabulate(data, headers=headers, tablefmt="grid"))
+        else:
+            print(tabulate(data, headers=headers, tablefmt="grid"), file=f)

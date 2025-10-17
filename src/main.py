@@ -235,9 +235,33 @@ obj_GA = genetic_algorithm(listRuangan, listMatkul, listMahasiswa)
 
 # Menjalankan genetic algorithm, GA(k, n)
 data_GA = obj_GA.GA(40, 1000)
+with open("genetic_algorithm.txt", "w") as f:
+    f.write(f"Nilai fitness function akhir yang dicapai (max): {data_GA[2][-1][0]}\n")
+    f.write(f"Durasi pencarian: {data_GA[5]} s\n")
+    f.write(f"Jumlah individu dalam populasi (k): {data_GA[3]}\n")
+    f.write(f"Batas maksimum iterasi (n): {data_GA[4]}\n")
+    f.write(f"Banyak iterasi yang dilakukan: {len(data_GA[2]) - 1}\n\n")
+    
+    f.write(f"Fittest Individual:\n")
+    data_GA[6].display(f)
 
-# Membuat chart plotting
+    f.write("\n===============================================================\n")
+
+    f.write("Populasi Awal: ")
+    for i in range(len(data_GA[0])):
+        f.write(f"Individu {i + 1}:")
+        data_GA[0][i].display(f)
+        f.write("\n")
+
+    f.write("\n===============================================================\n")
+
+    f.write("Populasi Awal: ")
+    for i in range(len(data_GA[1])):
+        f.write(f"Individu {i + 1}:")
+        data_GA[1][i].display(f)
+        f.write("\n")
+
 genetic_algorithm.make_chart(data_GA, "./plot5.png")
-# ====================== Contoh Pengggunaan GA ========================
 
-#berhasil (keknya)
+print(f"Data Genetic Algorithm disimpan di ./genetic-algorithm.txt dan plot disimpan di ./plot5.png")
+
