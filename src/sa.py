@@ -67,7 +67,24 @@ class SimulatedAnnealing:
             if len(set(plotObjFunc[-N:])) == 1:
                 localOptimum = True
 
-        return copy.deepcopy(current), currentScore, plotObjFunc, plotExp, elapsed_time, localOptimum
+        plateau_count = 0
+        consecutive = 1
+        in_plateau = False  
+
+        for j in range(1, len(plotObjFunc)):
+            if plotObjFunc[j] == plotObjFunc[j - 1]:
+                consecutive += 1
+
+                if consecutive >= 5 and not in_plateau:
+                    plateau_count += 1
+                    in_plateau = True 
+            else:
+                consecutive = 1
+                in_plateau = False 
+
+
+        return copy.deepcopy(current), currentScore, plotObjFunc, plotExp, elapsed_time, localOptimum, plateau_count
+
     
     def make_chart(self, data_output, file_path):
         plt.figure(figsize=(8, 5))
