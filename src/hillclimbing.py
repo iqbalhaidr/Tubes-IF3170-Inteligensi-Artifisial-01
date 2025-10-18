@@ -244,18 +244,21 @@ class RandomRestartHC:
                 
                 # Buat hasil ketika tidak ada neighbour yang lebih rendah nilai obj func
                 if (neighbourScore >= currentScore):
-                    bestScore = currentScore
                     subPlotObjFunc.append(currentScore)
+                    print(f"obj {currentScore}")
                     break
                 else:
                     current = neighbour
                     currentScore = neighbourScore
+                    print(f"obj {currentScore}")
                     subPlotObjFunc.append(currentScore)
 
             # Mengambil state terbaik saat ini dengan membandingkan nilai
             # obj func dari hasil state restart
             if (bestScore > currentScore):
                 bestState = current
+                bestScore = currentScore
+
 
             # Masukkan obj func per iterasi dalam satu restart ke plot obj
             iterationCountList.append(iterationCount)

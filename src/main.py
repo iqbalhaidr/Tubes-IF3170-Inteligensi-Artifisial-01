@@ -113,7 +113,7 @@ def main():
             data = solver.solve()
             final_state = data[1]
             print_summary(final_state, "Random Restart HC")
-            print("Banyak restart:", len(data))
+            print("Banyak restart:", data[5])
             for i, value in enumerate(data[4], start=1):
                 print(f"Restart {i}: {value}")
 
