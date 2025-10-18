@@ -1,267 +1,148 @@
-from state import *
 import json
-from hillclimbing import *
-from sa import *
-from genetic_algorithm import *
 import os
-
-path = "src\input2.json" 
-
-
-with open(path, "r", encoding="utf-8") as file:
-    data = json.load(file)
-
-listRuangan =[]
-listMatkul = []
-listMahasiswa = [] #isinya seperti ini (NIM, dftar mk)
-
-for value in data['mahasiswa']:
-    NIM = value['nim']
-    daftar_mk = value['daftar_mk']
-    listMahasiswa.append((NIM,daftar_mk))
-
-for value in data['ruangan']:
-    kode = value['kode']
-    kuota = value['kuota']
-
-    ruangan = Ruangan(kode, kuota)
-    listRuangan.append(ruangan)
-
-
-for value in data['kelas_mata_kuliah']:
-    kode = value['kode']
-    jumlah_mahasiswa = value['jumlah_mahasiswa']
-    sks = value['sks']
-
-    matkul = Matkul(kode,jumlah_mahasiswa)
-
-    for mahasewa in data['mahasiswa']:
-        for i,mk in enumerate(mahasewa['daftar_mk']):
-            if kode == mk:
-                prioritas = mahasewa['prioritas'][i]
-                matkul.addPriority(str(prioritas))
-
-
-    for i in range(sks):
-        temp = copy.deepcopy(matkul)
-        listMatkul.append(temp)
-
-for elem in listRuangan:
-    print(elem.kode)
-
-print()
-
-for elem in listMatkul:
-    print(elem.kode)
+import copy
+from state import State, Ruangan, Matkul
+from hillclimbing import SteepestAscentHC, StochasticHC, SidewaysMoveHC, RandomRestartHC
+from sa import SimulatedAnnealing
+from genetic_algorithm import genetic_algorithm
 
 
 
-stateAwal = State(listRuangan, listMahasiswa)
-stateAwal.makeComplete(listMatkul)
+def load_data(path):
+    """Load JSON input berisi data ruangan, mahasiswa, dan kelas."""
+    if not os.path.exists(path):
+        print(f"[ERROR] File '{path}' tidak ditemukan.")
+        exit(1)
 
-print("berhasil")
+    with open(path, "r", encoding="utf-8") as file:
+        data = json.load(file)
 
-for key in stateAwal.jadwal:
-    for x, list in enumerate(stateAwal.jadwal[key]):
-        if not list:
-            print("hari " + key + " jam "+ str(x+7))
-            continue
-        for i,matkul in enumerate(list):
-            print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+    listRuangan = [Ruangan(r["kode"], r["kuota"]) for r in data["ruangan"]]
+    listMahasiswa = [(m["nim"], m["daftar_mk"]) for m in data["mahasiswa"]]
 
-print("Nilai objective sekarang " + str(stateAwal.countObjective()))
+    listMatkul = []
+    for value in data["kelas_mata_kuliah"]:
+        kode = value["kode"]
+        jumlah_mahasiswa = value["jumlah_mahasiswa"]
+        sks = value["sks"]
 
-# neighbours = stateAwal.swapMethod()
-print("berhasil 2")
-print()
-
-#coba salah 1 neighbor
-# for key in neighbours[0].jadwal:
-#     for list in neighbours[0].jadwal[key]:
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(i+7) + " " + matkul.kode)
+        matkul = Matkul(kode, jumlah_mahasiswa)
 
 
-print()
-print()
-# ====================== Contoh Pengggunaan Stochastic ========================
-print("====================== Contoh Pengggunaan Stochastic ========================")
-stochasticSolver = StochasticHC(stateAwal, 20*len(listMatkul))
-data_StochasticHC = stochasticSolver.solve()
-stateAwal_StochasticHC = stochasticSolver.stateAwal
-stateAwal_StochasticHC.display()
-stateAkhir_StochasticHC = data_StochasticHC[0]
-objFunc_StochasticHC = data_StochasticHC[1]
-iterationCount_StochasticHC = data_StochasticHC[3]
-elapsedTime_StochasticHC = data_StochasticHC[4]
-
-stochasticSolver.make_chart(data_StochasticHC,"./plot0.png")
-# for key in stateAkhir.jadwal:
-#     for x, list in enumerate(stateAkhir.jadwal[key]):
-#         if not list:
-#             print("hari " + key + " jam "+ str(x+7))
-#             continue
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir stochastic " + str(objFunc_StochasticHC))
-print(f"Iteration count = {iterationCount_StochasticHC}")
-print(f"Total waktu : {elapsedTime_StochasticHC} s")
-stateAkhir_StochasticHC.display()
-print()
-print()
-
-# ====================== Contoh Pengggunaan Steepest Ascent ========================
-print("====================== Contoh Pengggunaan Steepest Ascent ========================")
-steepestAscentSolver = SteepestAscentHC(stateAwal)
-data_SteepestAscentHC = steepestAscentSolver.solve()
-stateAwal_SteepestAscentHC = steepestAscentSolver.stateAwal
-stateAwal_SteepestAscentHC.display()
-stateAkhir_SteepestAscentHC = data_SteepestAscentHC[0]
-objFunc_SteepestAscentHC = data_SteepestAscentHC[1]
-iterationCount_SteepestAscentHC = data_SteepestAscentHC[3]
-elapsedTime_SteepestAscentHC = data_SteepestAscentHC[4]
-
-steepestAscentSolver.make_chart(data_SteepestAscentHC,"./plot1.png")
-
-# stateAkhir, objectiveFunc = steepestAscentSolver.solve()
-# for key in stateAkhir.jadwal:
-#     for x, list in enumerate(stateAkhir.jadwal[key]):
-#         if not list:
-#             print("hari " + key + " jam "+ str(x+7))
-#             continue
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir steepest ascent " + str(objFunc_SteepestAscentHC))
-print(f"Iteration count = {iterationCount_SteepestAscentHC}")
-print(f"Total waktu = {elapsedTime_SteepestAscentHC} s")
-stateAkhir_SteepestAscentHC.display()
-print()
-print()
-
-# ====================== Contoh Pengggunaan Sideways Move ========================
-print("====================== Contoh Pengggunaan Sideways Move ========================")
-sidewaysMoveSolver = SidewaysMoveHC(stateAwal, 6)
-data_SidewaysMoveHC = sidewaysMoveSolver.solve()
-stateAwal_SidewaysMoveHC = sidewaysMoveSolver.stateAwal
-stateAwal_SidewaysMoveHC.display()
-stateAkhir_SidewaysMoveHC = data_SidewaysMoveHC[0]
-objFunc_SidewaysMoveHC = data_SidewaysMoveHC[1]
-iterationCount_SidewaysMoveHC = data_SidewaysMoveHC[3]
-elapsedTime_SidewaysMoveHC = data_SidewaysMoveHC[4]
-
-sidewaysMoveSolver.make_chart(data_SidewaysMoveHC,"./plot2.png")
+        for mhs in data["mahasiswa"]:
+            for i, mk in enumerate(mhs["daftar_mk"]):
+                if kode == mk:
+                    prioritas = mhs["prioritas"][i]
+                    matkul.addPriority(str(prioritas))
 
 
-# for key in stateAkhir.jadwal:
-#     for x, list in enumerate(stateAkhir.jadwal[key]):
-#         if not list:
-#             print("hari " + key + " jam "+ str(x+7))
-#             continue
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir sideways move " + str(objFunc_SidewaysMoveHC))
-print(f"Iteration count = {iterationCount_SidewaysMoveHC}")
-print(f"Total waktu = {elapsedTime_SidewaysMoveHC} s")
-stateAkhir_SidewaysMoveHC.display()
-print()
-print()
+        for _ in range(sks):
+            listMatkul.append(copy.deepcopy(matkul))
 
-# ====================== Contoh Pengggunaan Random Restart ========================
-print("====================== Contoh Pengggunaan Random Restart ========================")
-randomRestartSolver = RandomRestartHC(listRuangan, listMatkul, listMahasiswa, 4)
-data_RandomRestartHC = randomRestartSolver.solve()
-# Kumpulan initial states
-statesAwal_RandomRestartHC = data_RandomRestartHC[0] 
-statesAwal_RandomRestartHC[0].display()
-
-stateAkhir_RandomRestartHC = data_RandomRestartHC[1]
-objFunc_RandomRestartHC = data_RandomRestartHC[2]
-iterationCount_RandomRestartHC = data_RandomRestartHC[4]
-restartCount_RandomRestartHC = data_RandomRestartHC[5]
-elapsedTime_RandomRestartHC = data_RandomRestartHC[6]
-
-randomRestartSolver.make_chart(data_RandomRestartHC,"./plot3.png")
+    return listRuangan, listMahasiswa, listMatkul
 
 
-# for key in stateAkhir.jadwal:
-#     for x, list in enumerate(stateAkhir.jadwal[key]):
-#         if not list:
-#             print("hari " + key + " jam "+ str(x+7))
-#             continue
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
-print("Nilai objective akhir Random Restart " + str(objFunc_RandomRestartHC))
-# Iteration count per restart
-print(f"Banyak restart = {restartCount_RandomRestartHC}")
-for i, iterCount in enumerate(iterationCount_RandomRestartHC):
-    print(f"Restart {i} - Iteration count = {iterCount}")
-print(f"Total waktu = {elapsedTime_RandomRestartHC} s")
-print()
-stateAkhir_RandomRestartHC.display()
-print()
-print()
+def print_summary(state, label):
+    print(f"\n=== {label} ===")
+    print(f"Nilai objective: {state.countObjective()}")
+    state.display()
 
-# ====================== Contoh Pengggunaan SA ========================
-print("====================== Contoh Pengggunaan SA ========================")
-sa = SimulatedAnnealing(stateAwal, 20*len(listMatkul), 100)
-data = sa.solve()
-stateAwalSA = sa.stateAwal
-finalState = data[0]
-objFunc = data[1]
 
-if data[5]: 
-    print("SA terjebak di local optimum")
 
-# for key in finalState.jadwal:
-#     for x, list in enumerate(finalState.jadwal[key]):
-#         if not list:
-#             print("hari " + key + " jam "+ str(x+7))
-#             continue
-#         for i,matkul in enumerate(list):
-#             print("hari " + key + " jam "+ str(x+7) + " " + matkul.kode)
+def main():
+    print("Sistem Penjadwalan Otomatis dengan berbagai algoritma optimasi.")
+    input_path = input("Masukkan path file input JSON (contoh: src/input2.json): ").strip()
 
-sa.make_chart(data,"./plot4.png")
+    listRuangan, listMahasiswa, listMatkul = load_data(input_path)
 
-print("Nilai objective akhir SA " + str(objFunc))
-print(f"Total waktu = {data[4]} s")
-finalState.display()
-print()
-print()
+    run_count = 1
+    while True:
+        print(f"\n=================== Percobaan ke-{run_count} ===================")
 
-# ====================== Contoh Pengggunaan GA ========================
-print("====================== Contoh Pengggunaan GA ========================")
-# Instansiasi object dari class genetic_algorithm
-obj_GA = genetic_algorithm(listRuangan, listMatkul, listMahasiswa)
+        # Buat state awal acak
+        stateAwal = State(listRuangan, listMahasiswa)
+        stateAwal.makeComplete(listMatkul)
+        print_summary(stateAwal, f"State Awal {run_count}")
 
-# Menjalankan genetic algorithm, GA(k, n)
-data_GA = obj_GA.GA(40, 1000)
-with open("genetic_algorithm.txt", "w") as f:
-    f.write(f"Nilai fitness function akhir yang dicapai (max): {data_GA[2][-1][0]}\n")
-    f.write(f"Durasi pencarian: {data_GA[5]} s\n")
-    f.write(f"Jumlah individu dalam populasi (k): {data_GA[3]}\n")
-    f.write(f"Batas maksimum iterasi (n): {data_GA[4]}\n")
-    f.write(f"Banyak iterasi yang dilakukan: {len(data_GA[2]) - 1}\n\n")
-    
-    f.write(f"Fittest Individual:\n")
-    data_GA[6].display(f)
+        # Menu algoritma
+        print("\nPilih algoritma yang ingin dijalankan:")
+        print("1. Steepest Ascent Hill Climbing")
+        print("2. Stochastic Hill Climbing")
+        print("3. Sideways Move Hill Climbing")
+        print("4. Random Restart Hill Climbing")
+        print("5. Simulated Annealing")
+        print("6. Genetic Algorithm")
+        print("7. Keluar")
+        choice = input("Masukkan pilihan (1–7): ").strip()
 
-    f.write("\n===============================================================\n")
+        if choice == "7":
+            print("Terima kasih, program selesai.")
+            break
 
-    f.write("Populasi Awal: ")
-    for i in range(len(data_GA[0])):
-        f.write(f"Individu {i + 1}:")
-        data_GA[0][i].display(f)
-        f.write("\n")
+        elif choice == "1":
+            solver = SteepestAscentHC(stateAwal)
+            data = solver.solve()
+            final_state, obj_value, *_ = data
+            print_summary(final_state, "Steepest Ascent HC")
+            print("Banyak iterasi:", data[3])
+            print("Waktu:", data[4])
+            solver.make_chart(data, f"./plot_steepest_run{run_count}.png")
 
-    f.write("\n===============================================================\n")
+        elif choice == "2":
+            solver = StochasticHC(stateAwal, 20 * len(listMatkul))
+            data = solver.solve()
+            final_state, obj_value, *_ = data
+            print_summary(final_state, "Stochastic HC")
+            print("Banyak iterasi:", data[3])
+            print("Waktu:", data[4])
+            solver.make_chart(data, f"./plot_stochastic_run{run_count}.png")
 
-    f.write("Populasi Awal: ")
-    for i in range(len(data_GA[1])):
-        f.write(f"Individu {i + 1}:")
-        data_GA[1][i].display(f)
-        f.write("\n")
+        elif choice == "3":
+            maxSideWaysMove = int(input("Silahkan masukkan berapa max sideways move: "))
+            solver = SidewaysMoveHC(stateAwal, maxSideWaysMove)
+            data = solver.solve()
+            final_state, obj_value, *_ = data
+            print_summary(final_state, "Sideways Move HC")
+            print("Banyak iterasi:", data[3])
+            print("Waktu:", data[4])
+            solver.make_chart(data, f"./plot_sideways_run{run_count}.png")
 
-genetic_algorithm.make_chart(data_GA, "./plot5.png")
+        elif choice == "4":
+            maxRestart = int(input("Silahkan masukkan berapa max restart: "))
+            solver = RandomRestartHC(listRuangan, listMatkul, listMahasiswa, maxRestart)
+            data = solver.solve()
+            final_state = data[1]
+            print_summary(final_state, "Random Restart HC")
+            print("Banyak restart:", len(data))
+            for i, value in enumerate(data[4], start=1):
+                print(f"Restart {i}: {value}")
 
-print(f"Data Genetic Algorithm disimpan di ./genetic-algorithm.txt dan plot disimpan di ./plot5.png")
 
+            print("Waktu:", data[6])
+            solver.make_chart(data, f"./plot_restart_run{run_count}.png")
+
+        elif choice == "5":
+            solver = SimulatedAnnealing(stateAwal, 20 * len(listMatkul), 100)
+            data = solver.solve()
+            final_state, obj_value, *_ = data
+            print_summary(final_state, "Simulated Annealing")
+            print("Waktu:", data[4])
+            print("Jumlah local optimum:", data[6])
+            solver.make_chart(data, f"./plot_sa_run{run_count}.png")
+
+        elif choice == "6":
+            solver = genetic_algorithm(listRuangan, listMatkul, listMahasiswa)
+            data = solver.GA(40, 1000)
+            fittest = data[6]
+            print_summary(fittest, "Genetic Algorithm")
+            genetic_algorithm.make_chart(data, f"./plot_ga_run{run_count}.png")
+            print("Waktu:", data[5])
+
+        else:
+            print("[ERROR] Pilihan tidak valid. Silakan pilih 1–7.")
+
+        run_count += 1
+
+
+if __name__ == "__main__":
+    main()
