@@ -51,6 +51,7 @@ def print_summary(state, label):
 
 def main():
     print("Sistem Penjadwalan Otomatis dengan berbagai algoritma optimasi.")
+    print()
     input_path = input("Masukkan path file input JSON (contoh: src/input2.json): ").strip()
 
     listRuangan, listMahasiswa, listMatkul = load_data(input_path)
@@ -140,8 +141,13 @@ def main():
 
         else:
             print("[ERROR] Pilihan tidak valid. Silakan pilih 1–7.")
-
         run_count += 1
+        print()
+        print()
+        print()
+        print()
+
+       
 
 
 if __name__ == "__main__":

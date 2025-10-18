@@ -19,6 +19,7 @@ class StochasticHC:
         start_time = time.perf_counter()
         
         for i in range(self.jumlahIterasi):
+            plotObjFunc.append(currentScore)
             listTuple = current.serialize()
             neighbor1 = current.swapSatuMatkul(listTuple)
             neighbor2 = current.moveOneSuccessorMethod()
@@ -35,8 +36,6 @@ class StochasticHC:
             if neighbourScore < currentScore:
                 current = neighbour
                 currentScore = neighbourScore
-                plotObjFunc.append(currentScore)
-            else:
                 plotObjFunc.append(currentScore)
 
         end_time = time.perf_counter()
@@ -77,6 +76,7 @@ class SteepestAscentHC:
         start_time = time.perf_counter()
         while (True):
             iterationCount += 1
+            plotObjFunc.append(currentScore)
 
             successors1 = current.swapMethod()
             successors2 = current.moveAllSuccessorMethod()
@@ -95,12 +95,10 @@ class SteepestAscentHC:
 
             # keluarkan hasil ketika tidak ada neighbour yang lebih rendah dengan nilai obj func
             if (neighbourScore >= currentScore):
-                plotObjFunc.append(currentScore)
                 break
             else:
                 current = neighbour
                 currentScore = neighbourScore
-                plotObjFunc.append(currentScore)
    
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
@@ -141,6 +139,7 @@ class SidewaysMoveHC:
         start_time = time.perf_counter()
         while (True):
             iterationCount += 1
+            plotObjFunc.append(currentScore)
 
             successors1 = current.swapMethod()
             successors2 = current.moveAllSuccessorMethod()
@@ -158,7 +157,6 @@ class SidewaysMoveHC:
 
             # keluarkan hasil ketika tidak ada neighbour yang lebih rendah sama dengan nilai obj func
             if (neighbourScore > currentScore):
-                plotObjFunc.append(currentScore)
                 break
             else:
                 # jumlah sideways move bertambah jika nilai obj func sama
@@ -167,7 +165,7 @@ class SidewaysMoveHC:
 
                 current = neighbour
                 currentScore = neighbourScore
-                plotObjFunc.append(currentScore)
+
                 if (sidewaysMove == self.maxSidewaysMove):
                     break
        
@@ -227,6 +225,7 @@ class RandomRestartHC:
 
             while (True):
                 iterationCount += 1
+                subPlotObjFunc.append(currentScore)
 
                 successors1 = current.swapMethod()
                 successors2 = current.moveAllSuccessorMethod()
@@ -244,14 +243,11 @@ class RandomRestartHC:
                 
                 # Buat hasil ketika tidak ada neighbour yang lebih rendah nilai obj func
                 if (neighbourScore >= currentScore):
-                    subPlotObjFunc.append(currentScore)
-                    print(f"obj {currentScore}")
+
                     break
                 else:
                     current = neighbour
                     currentScore = neighbourScore
-                    print(f"obj {currentScore}")
-                    subPlotObjFunc.append(currentScore)
 
             # Mengambil state terbaik saat ini dengan membandingkan nilai
             # obj func dari hasil state restart
