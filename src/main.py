@@ -144,11 +144,16 @@ def main():
 
         elif choice == "6":
             solver = genetic_algorithm(listRuangan, listMatkul, listMahasiswa)
-            data = solver.GA(40, 1000)
+            populasi = int(input("Silahkan masukkan ukuran populasi (k): "))
+            maks_iterasi = int(input("Silahkan masukkan maksimum iterasi (n): "))
+            data = solver.GA(populasi, maks_iterasi)
             fittest = data[6]
-            print_summary(fittest, "Genetic Algorithm")
-            genetic_algorithm.make_chart(data, f"./plot_ga_run{run_count}.png")
+            print_summary(fittest, "Genetic Algorithm (Fittest Individual)")
+            print(f"Nilai fitness function akhir yang dicapai (max = 1): {data[2][-1][0]}")
             print("Waktu:", data[5])
+            print(f"Banyak iterasi yang dilakukan: {len(data[2]) - 1}")
+            genetic_algorithm.write_data(data, f"./data_ga_run{run_count}.txt")
+            genetic_algorithm.make_chart(data, f"./plot_ga_run{run_count}.png")
 
         else:
             print("[ERROR] Pilihan tidak valid. Silakan pilih 1–7.")

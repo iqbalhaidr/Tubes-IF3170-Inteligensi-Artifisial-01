@@ -244,3 +244,33 @@ class genetic_algorithm:
         plt.grid(True)
         plt.savefig(file_path)
         plt.close()
+
+    @staticmethod
+    def write_data(data_output, file_path):
+        with open(file_path, "w") as f:
+            f.write(f"Nilai fitness function akhir yang dicapai (max = 1): {data_output[2][-1][0]}\n")
+            f.write(f"Durasi pencarian: {data_output[5]} s\n")
+            f.write(f"Jumlah individu dalam populasi (k): {data_output[3]}\n")
+            f.write(f"Batas maksimum iterasi (n): {data_output[4]}\n")
+            f.write(f"Banyak iterasi yang dilakukan: {len(data_output[2]) - 1}\n\n")
+            
+            f.write(f"Fittest Individual:\n")
+            data_output[6].display(f)
+
+            f.write("\n===============================================================\n")
+
+            f.write("Populasi Awal: ")
+            for i in range(len(data_output[0])):
+                f.write(f"Individu {i + 1}:")
+                data_output[0][i].display(f)
+                f.write("\n")
+
+            f.write("\n===============================================================\n")
+
+            f.write("Populasi Awal: ")
+            for i in range(len(data_output[1])):
+                f.write(f"Individu {i + 1}:")
+                data_output[1][i].display(f)
+                f.write("\n")
+        
+        print(f"Data Genetic Algorithm sudah tersimpan di {file_path}")

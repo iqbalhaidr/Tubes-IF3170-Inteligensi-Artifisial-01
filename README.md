@@ -7,7 +7,7 @@ Tugas ini mengeksplorasi implementasi dari beberapa algoritma local search untuk
 **Setup**
 1. Clone repositori ini ke perangkat lokal
 2. Pastikan perangkat sudah terinstall python
-3. Pastikan package matplotlib, numpy, tabulate sudah terinstall
+3. Pastikan package matplotlib, numpy, tabulate, rich sudah terinstall
 4. Arahkan direktori ke folder yang sesuai
 ```
 cd path/to/folder/
