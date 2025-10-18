@@ -1,10 +1,14 @@
 import json
 import os
 import copy
+from rich.markdown import Markdown
+from rich.console import Console
 from state import State, Ruangan, Matkul
 from hillclimbing import SteepestAscentHC, StochasticHC, SidewaysMoveHC, RandomRestartHC
 from sa import SimulatedAnnealing
 from genetic_algorithm import genetic_algorithm
+from rich.markdown import Markdown
+from rich.console import Console
 
 
 
@@ -50,7 +54,14 @@ def print_summary(state, label):
 
 
 def main():
-    print("Sistem Penjadwalan Otomatis dengan berbagai algoritma optimasi.")
+    print()
+    console = Console()
+    md = Markdown("""
+    SISTEM PENJADWALAN OTOMATIS DENGAN BERBAGAI ALGORITMA OPTIMASI
+    """)
+    console.print(md)
+
+    print()
     print()
     input_path = input("Masukkan path file input JSON (contoh: src/input2.json): ").strip()
 
@@ -144,10 +155,9 @@ def main():
         run_count += 1
         print()
         print()
-        print()
-        print()
 
-       
+        input("Klik ENTER untuk kembali...")
+        os.system('cls')
 
 
 if __name__ == "__main__":
