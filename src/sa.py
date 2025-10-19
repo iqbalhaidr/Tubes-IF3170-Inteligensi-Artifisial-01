@@ -19,11 +19,11 @@ class SimulatedAnnealing:
         
         current = self.stateAwal
         currentScore = self.stateAwal.countObjective()
-        plotObjFunc.append(currentScore)
         
         start_time = time.perf_counter()
 
         for i in range(self.jumlahIterasi):
+            plotObjFunc.append(currentScore)
             if currentScore == 0:
                 break
 
@@ -54,7 +54,6 @@ class SimulatedAnnealing:
                    
             plotExp.append((i,prob))
             self.temperature = self.temperature * self.coolingRate
-            plotObjFunc.append(currentScore)
 
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
