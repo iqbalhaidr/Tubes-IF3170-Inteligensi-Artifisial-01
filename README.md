@@ -21,6 +21,7 @@ python3 ./src/main.py
 
 
 ## Pembagian Tugas
+Kelompok 26 - kebodohan alami
 | NIM        | Tugas |
 |------------|-------|
 | 13523023   |Stochastic Hill Climbing, Steepest Ascent Hill Climbing, Sideways Move Hill Climbing, Random Restart Hill Climbing, State, Laporan|
